@@ -1,25 +1,2 @@
-buildscript {
-
-    repositories {
-        mavenCentral()
-    }
-}
-
-allprojects {
-    buildscript {
-        project.group = "harrikirik"
-        project.ext.releaseName = System.getProperty("releaseName", "$System.env.releaseName")
-        project.ext.isRelease = !(project.ext.releaseName == null || project.ext.releaseName.equals("") || project.ext.releaseName.equals("null"))
-        if (project.ext.isRelease) {
-            System.setProperty("versionCode", String.valueOf(System.getProperty("BUILD_NUMBER", "$System.env.BUILD_NUMBER")))
-        }
-        project.version = System.getProperty("versionName", "$System.env.APP_VERSION")
-        if (project.version == null || project.version.equals("") || project.version.equals("null")) {
-            project.version = "0.0.1"
-        }
-    }
-    repositories {
-        mavenCentral()
-    }
-}
+// Nothing here yet
 
