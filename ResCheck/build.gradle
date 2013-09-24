@@ -1,0 +1,34 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.5.+'
+    }
+}
+
+apply plugin: 'android'
+
+android {
+    compileSdkVersion 17
+    buildToolsVersion "17.0"
+//    signingConfigs {
+//      defaultSigning {
+//          storeFile file('signing/release.keystore')
+//          storePassword ''
+//          keyAlias ''
+//          keyPassword ''
+//        }
+//	}
+    defaultConfig {
+        packageName "com.harrikirik.speed"
+        versionName project.version
+        versionCode Integer.valueOf(System.getProperty("versionCode", "1"))
+//		signingConfig signingConfigs.defaultSigning
+		testInstrumentationRunner = "android.test.InstrumentationTestRunner"
+    }
+}
+
+dependencies {
+}

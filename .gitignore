@@ -18,3 +18,15 @@ local.properties
 # Eclipse project files
 .classpath
 .project
+
+out/
+.idea/
+*.iml
+# Gradle
+# 
+.gradle/
+
+# Mac specific
+.DS_Store
+
+Rescheck/build

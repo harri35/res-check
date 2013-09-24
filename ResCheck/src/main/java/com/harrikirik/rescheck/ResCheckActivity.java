@@ -1,4 +1,4 @@
-package com.harrikirik.test;
+package com.harrikirik.rescheck;
 
 import android.app.Activity;
 import android.app.ActivityManager;
