@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.harrikirik.rescheck.R;
-import com.harrikirik.rescheck.com.harrikirik.rescheck.util.Util;
+import com.harrikirik.rescheck.util.Util;
 
 public class SpecFragment extends Fragment {
 

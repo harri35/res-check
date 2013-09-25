@@ -1,4 +1,4 @@
-package com.harrikirik.rescheck.com.harrikirik.rescheck.util;
+package com.harrikirik.rescheck.util;
 
 import android.app.Activity;
 import android.app.ActivityManager;
