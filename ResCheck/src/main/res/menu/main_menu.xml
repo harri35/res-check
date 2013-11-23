@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:com.harrikirik.rescheck="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_copy_to_clipboard"
+        android:title="@string/menu_copy_to_clipboard"
+        android:icon="@drawable/content_copy"
+        com.harrikirik.rescheck:showAsAction="always"
+        android:orderInCategory="1"/>
+
+    <item
+        android:id="@+id/menu_share_with"
+        android:title="@string/menu_share_with"
+        android:icon="@drawable/social_share"
+        com.harrikirik.rescheck:showAsAction="ifRoom"
+        android:orderInCategory="2"/>
+
+</menu>
