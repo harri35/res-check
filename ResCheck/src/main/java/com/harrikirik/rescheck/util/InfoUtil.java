@@ -11,111 +11,129 @@ import com.harrikirik.rescheck.dto.InfoImageItem;
 import com.harrikirik.rescheck.dto.InfoItem;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 /**
+ * Util class to get the actual device info
  * Harri Kirik, harri35@gmail.com
  */
 public class InfoUtil {
+    private static Log log = Log.getInstance(InfoUtil.class);
 
     public static ArrayList<BaseInfoObject> getFullInfo(final Activity activity) {
         final ArrayList<BaseInfoObject> items = new ArrayList<BaseInfoObject>();
 
-        items.addAll(getGeneralDeviceInfo(activity));
-        items.addAll(getDisplayInfo(activity));
-        items.addAll(getScreenInfo(activity));
-        items.addAll(getMemoryInfo(activity));
+        try {
+            items.addAll(getGeneralDeviceInfo(activity));
+        } catch (Exception e) {
+            log.e("getFullInfo -> getGeneralDeviceInfo", e);
+        }
+
+        try {
+            items.addAll(getDisplayInfo(activity));
+        } catch (Exception e) {
+            log.e("getFullInfo -> getDisplayInfo", e);
+        }
+
+        try {
+            items.addAll(getScreenInfo(activity));
+        } catch (Exception e) {
+            log.e("getFullInfo -> getScreenInfo", e);
+        }
+
+        try {
+            items.addAll(getMemoryInfo(activity));
+        } catch (Exception e) {
+            log.e("getFullInfo -> getMemoryInfo", e);
+        }
 
         return items;
     }
 
     private static ArrayList<BaseInfoObject> getGeneralDeviceInfo(final Activity activity) {
-        ArrayList<BaseInfoObject> items = new ArrayList<BaseInfoObject>();
-        addHeader(items, "Device general info");
-        addItem(items, "Model", android.os.Build.MODEL);
-        addItem(items, "Device", android.os.Build.DEVICE);
-        addItem(items, "Manufacturer", android.os.Build.MANUFACTURER);
-        addItem(items, "Product", android.os.Build.PRODUCT);
-
+        final ArrayList<BaseInfoObject> items = new ArrayList<BaseInfoObject>();
+        addHeader(items, activity.getString(R.string.text_device_general_info));
+        addItem(items, activity.getString(R.string.text_model), android.os.Build.MODEL);
+        addItem(items, activity.getString(R.string.text_device), android.os.Build.DEVICE);
+        addItem(items, activity.getString(R.string.text_manufacturer), android.os.Build.MANUFACTURER);
+        addItem(items, activity.getString(R.string.text_product), android.os.Build.PRODUCT);
         return items;
     }
 
     private static ArrayList<BaseInfoObject> getDisplayInfo(final Activity activity) {
-        ArrayList<BaseInfoObject> items = new ArrayList<BaseInfoObject>();
-        Display display = activity.getWindowManager().getDefaultDisplay();
+        final ArrayList<BaseInfoObject> items = new ArrayList<BaseInfoObject>();
+        final Display display = activity.getWindowManager().getDefaultDisplay();
 
-        addHeader(items, "Device display");
-        addItem(items, "Display id", String.valueOf(display.getDisplayId()));
-        addItem(items, "Display width", String.valueOf(display.getWidth()));
-        addItem(items, "Display height", String.valueOf(display.getHeight()));
+        addHeader(items, activity.getString(R.string.text_device_display));
+        addItem(items, activity.getString(R.string.text_display_id), String.valueOf(display.getDisplayId()));
+        addItem(items, activity.getString(R.string.text_display_with), String.valueOf(display.getWidth()));
+        addItem(items, activity.getString(R.string.text_display_height), String.valueOf(display.getHeight()));
 
 
-        String orientation = "ORIENTATION_UNDEFINED";
+        String orientation = activity.getString(R.string.text_orientation_unknown);
         switch (activity.getResources().getConfiguration().orientation) {
             case android.content.res.Configuration.ORIENTATION_LANDSCAPE:
-                orientation = "ORIENTATION_LANDSCAPE";
+                orientation = activity.getString(R.string.text_orientation_landscape);
                 break;
             case android.content.res.Configuration.ORIENTATION_PORTRAIT:
-                orientation = "ORIENTATION_PORTRAIT";
+                orientation = activity.getString(R.string.text_orientation_portrait);
                 break;
             case android.content.res.Configuration.ORIENTATION_SQUARE:
-                orientation = "ORIENTATION_SQUARE";
+                orientation = activity.getString(R.string.text_orientation_square);
                 break;
         }
-        addItem(items, "Display orientation", orientation);
+        addItem(items, activity.getString(R.string.text_display_orientation), orientation);
 
         return items;
     }
 
     public static ArrayList<BaseInfoObject> getScreenInfo(final Activity activity) {
-        ArrayList<BaseInfoObject> items = new ArrayList<BaseInfoObject>();
-        Display display = activity.getWindowManager().getDefaultDisplay();
-
-        DisplayMetrics metrics = new DisplayMetrics();
+        final ArrayList<BaseInfoObject> items = new ArrayList<BaseInfoObject>();
+        final Display display = activity.getWindowManager().getDefaultDisplay();
+        final DisplayMetrics metrics = new DisplayMetrics();
         display.getMetrics(metrics);
-        addHeader(items, "Device screen");
-        items.add(new InfoImageItem("Screen density", R.drawable.icon_dpi));
-        addItem(items, "Screen density value DPI", String.valueOf(metrics.densityDpi));
-        addItem(items, "Screen density value ", String.valueOf(metrics.density));
-        addItem(items, "Screen scaled density", String.valueOf(metrics.scaledDensity));
+
+        addHeader(items, activity.getString(R.string.text_device_screen));
+        items.add(new InfoImageItem(activity.getString(R.string.text_screen_density), R.drawable.icon_dpi));
+        addItem(items, activity.getString(R.string.text_screen_density_value_dpi), String.valueOf(metrics.densityDpi));
+        addItem(items, activity.getString(R.string.text_screen_density_value), String.valueOf(metrics.density));
+        addItem(items, activity.getString(R.string.text_screen_scaled_density), String.valueOf(metrics.scaledDensity));
 
         final int screenSize = (activity.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK);
 
         String sizeValue = null;
         if (screenSize == Configuration.SCREENLAYOUT_SIZE_NORMAL) {
-            sizeValue = "NORMAL";
+            sizeValue = activity.getString(R.string.text_screen_normal_caps);
         } else if (screenSize == Configuration.SCREENLAYOUT_SIZE_SMALL) {
-            sizeValue = "SMALL";
+            sizeValue = activity.getString(R.string.text_screen_small_caps);
         } else if (screenSize == Configuration.SCREENLAYOUT_SIZE_LARGE) {
-            sizeValue = "LARGE";
+            sizeValue = activity.getString(R.string.text_screen_large_caps);
         } else if (screenSize == 4) {
-            sizeValue = "XLARGE";
+            sizeValue = activity.getString(R.string.text_screen_xlarge_caps);
         } else if (screenSize == Configuration.SCREENLAYOUT_SIZE_UNDEFINED) {
-            sizeValue = "UNDEFINED";
+            sizeValue = activity.getString(R.string.text_screen_unknown_caps);
         }
-        addItem(items, "Screen size", sizeValue);
+        addItem(items, activity.getString(R.string.screen_size), sizeValue);
 
         final int screenLength = (activity.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_LONG_MASK);
 
         String lengthValue = null;
         if (screenLength == Configuration.SCREENLAYOUT_LONG_YES) {
-            lengthValue = "LONG";
+            lengthValue = activity.getString(R.string.screen_length_long_caps);
         } else if (screenLength == Configuration.SCREENLAYOUT_LONG_NO) {
-            lengthValue = "NOTLONG";
+            lengthValue = activity.getString(R.string.screen_length_notlong_caps);
         } else if (screenLength == Configuration.SCREENLAYOUT_LONG_UNDEFINED) {
-            lengthValue = "UNDEFINED";
+            lengthValue = activity.getString(R.string.screen_length_unknown_caps);
         }
-        addItem(items, "Screen length", lengthValue);
+        addItem(items, activity.getString(R.string.text_screen_length), lengthValue);
 
         return items;
     }
 
     public static ArrayList<BaseInfoObject> getMemoryInfo(final Activity activity) {
-        ArrayList<BaseInfoObject> items = new ArrayList<BaseInfoObject>();
-        addHeader(items, "Device memory");
-        addItem(items, "Device memory class", (Util.getMemoryClass(activity) / 1024d / 1024d) + " MB");
-        addItem(items, "Device memory class", (Util.getAllowedMemory() / 1024d / 1024d) + " MB");
-
+        final ArrayList<BaseInfoObject> items = new ArrayList<BaseInfoObject>();
+        addHeader(items, activity.getString(R.string.text_device_memory));
+        addItem(items, activity.getString(R.string.text_device_memory_class_mb), activity.getString(R.string.text_x_mb, String.valueOf(Util.getMemoryClass(activity) / 1024d / 1024d)));
+        addItem(items, activity.getString(R.string.text_device_max_memory_mb), activity.getString(R.string.text_x_mb, String.valueOf((Util.getAllowedMemory() / 1024d / 1024d))));
         return items;
     }
 
