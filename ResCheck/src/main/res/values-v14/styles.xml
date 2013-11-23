@@ -19,7 +19,7 @@
 
 <resources>
 
-    <style name="Theme.Rescheck" parent="@style/Theme.AppCompat.Light">
+    <style name="Theme.Rescheck" parent="@style/Theme.AppCompat">
         <item name="android:actionBarItemBackground">@drawable/selectable_background_rescheck</item>
         <item name="android:popupMenuStyle">@style/PopupMenu.Rescheck</item>
         <item name="android:dropDownListViewStyle">@style/DropDownListView.Rescheck</item>
@@ -33,14 +33,14 @@
         
     </style>
 
-    <style name="ActionBar.Solid.Rescheck" parent="@style/Widget.AppCompat.Light.ActionBar.Solid">
+    <style name="ActionBar.Solid.Rescheck" parent="@style/Widget.AppCompat.ActionBar.Solid">
         <item name="android:background">@drawable/ab_background_textured_rescheck</item>
         <item name="android:backgroundStacked">@drawable/ab_stacked_solid_rescheck</item>
         <item name="android:backgroundSplit">@drawable/ab_background_textured_rescheck</item>
         <item name="android:progressBarStyle">@style/ProgressBar.Rescheck</item>
     </style>
 
-    <style name="ActionBar.Transparent.Rescheck" parent="@style/Widget.AppCompat.Light.ActionBar">
+    <style name="ActionBar.Transparent.Rescheck" parent="@style/Widget.AppCompat.ActionBar">
         <item name="android:background">@drawable/ab_transparent_rescheck</item>
         <item name="android:progressBarStyle">@style/ProgressBar.Rescheck</item>
     </style>

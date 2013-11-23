@@ -19,4 +19,6 @@
 
 <resources>
     <color name="pressed_rescheck">#CC657E99</color>
+    <color name="background_header_item">#CC657E99</color>
+
 </resources>
