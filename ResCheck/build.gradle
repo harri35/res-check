@@ -15,6 +15,39 @@ repositories {
 android {
     compileSdkVersion 19
     buildToolsVersion "19.0.0"
+	signingConfigs {
+        defaultSigning {
+			if (project.hasProperty('storeFilePath')) {
+				storeFile file(storeFilePath)
+            } else {
+				storeFile file('signing/debug.keystore')
+			}
+			
+			if (project.hasProperty('storePasswordV')) {
+				storePassword storePasswordV
+            } else {
+				storePassword 'android'
+			}
+			
+			if (project.hasProperty('keyAliasV')) {
+				keyAlias keyAliasV
+            } else {
+				keyAlias 'android'
+			}
+			
+			if (project.hasProperty('keyPasswordV')) {
+				keyPassword keyPasswordV
+            } else {
+				keyPassword 'android'
+			}
+
+			println '\n\n'
+			println 'CONF: release storeFile is set to ' + storeFile
+			println 'CONF: release storePassword is set to ' + storePassword
+			println 'CONF: release keyAlias is set to ' + keyAlias
+			println 'CONF: release keyPassword is set to ' + keyPassword
+        }
+    }
 
     defaultConfig {
         minSdkVersion 8
