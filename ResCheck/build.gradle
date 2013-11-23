@@ -32,7 +32,7 @@ android {
 			if (project.hasProperty('keyAliasV')) {
 				keyAlias keyAliasV
             } else {
-				keyAlias 'android'
+				keyAlias 'androiddebugkey'
 			}
 			
 			if (project.hasProperty('keyPasswordV')) {
@@ -49,9 +49,11 @@ android {
         }
     }
 
-    defaultConfig {
-        minSdkVersion 8
-        targetSdkVersion 19
+	defaultConfig {
+        packageName "com.harrikirik.rescheck"
+        versionName project.version
+        versionCode Integer.valueOf(System.getProperty("versionCode", "1"))
+        signingConfig signingConfigs.defaultSigning
     }
 }
 
