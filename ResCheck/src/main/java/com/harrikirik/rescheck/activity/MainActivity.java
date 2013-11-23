@@ -2,13 +2,13 @@ package com.harrikirik.rescheck.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import com.harrikirik.rescheck.R;
 import com.harrikirik.rescheck.fragment.SpecFragment;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends ActionBarActivity {
 	private static final String TAG_SPEC_FRAGMENT = "com.harrikirik.rescheck.TAG_SPEC_FRAGMENT";
 
 	/** Called when the activity is first created. */
