@@ -4,7 +4,6 @@
 	android:id="@+id/layout_spec_container"
     android:orientation="vertical"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-    android:background="#FF90B3C7">
+	android:layout_height="match_parent">
 		
 </FrameLayout>

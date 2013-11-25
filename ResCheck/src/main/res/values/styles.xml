@@ -29,8 +29,6 @@
         <item name="actionModeBackground">@drawable/cab_background_top_rescheck</item>
         <item name="actionModeSplitBackground">@drawable/cab_background_bottom_rescheck</item>
         <item name="actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Rescheck</item>
-
-        
     </style>
 
     <style name="ActionBar.Solid.Rescheck" parent="@style/Widget.AppCompat.ActionBar.Solid">
