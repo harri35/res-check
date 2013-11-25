@@ -1,5 +1,7 @@
 package com.harrikirik.rescheck.util;
 
+import com.harrikirik.rescheck.BuildConfig;
+
 /**
  * A little more convenient logging class
  * Harri Kirik, harri35@gmail.com
@@ -28,6 +30,10 @@ public class Log {
     }
 
     public void d(final String msg, final Throwable e) {
+        if (!BuildConfig.DEBUG) {
+            // No not log this level for release
+            return;
+        }
         if (e == null) {
             android.util.Log.d(tag, msg);
         } else {
