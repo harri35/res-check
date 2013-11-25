@@ -1,7 +1,11 @@
 package com.harrikirik.rescheck.util;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import com.harrikirik.rescheck.R;
@@ -17,6 +21,10 @@ import java.util.ArrayList;
  * Harri Kirik, harri35@gmail.com
  */
 public class InfoUtil {
+    private static final int LOW_RAM_DEVICE_UNKNOWN = R.string.text_low_ram_device_unknown;
+    private static final int LOW_RAM_DEVICE_YES = R.string.text_low_ram_device_yes;
+    private static final int LOW_RAM_DEVICE_NO = R.string.text_low_ram_device_no;
+
     private static Log log = Log.getInstance(InfoUtil.class);
 
     public static ArrayList<BaseInfoObject> getFullInfo(final Activity activity) {
@@ -132,8 +140,9 @@ public class InfoUtil {
     public static ArrayList<BaseInfoObject> getMemoryInfo(final Activity activity) {
         final ArrayList<BaseInfoObject> items = new ArrayList<BaseInfoObject>();
         addHeader(items, activity.getString(R.string.text_device_memory));
-        addItem(items, activity.getString(R.string.text_device_memory_class_mb), activity.getString(R.string.text_x_mb, String.valueOf(Util.getMemoryClass(activity) / 1024d / 1024d)));
-        addItem(items, activity.getString(R.string.text_device_max_memory_mb), activity.getString(R.string.text_x_mb, String.valueOf((Util.getAllowedMemory() / 1024d / 1024d))));
+        addItem(items, activity.getString(R.string.text_device_memory_class_mb), activity.getString(R.string.text_x_mb, String.valueOf(getMemoryClass(activity) / 1024d / 1024d)));
+        addItem(items, activity.getString(R.string.text_device_max_memory_mb), activity.getString(R.string.text_x_mb, String.valueOf((getAllowedMemory() / 1024d / 1024d))));
+        addItem(items, activity.getString(R.string.text_low_ram_device), activity.getString(isLowRamDevice(activity)));
         return items;
     }
 
@@ -163,5 +172,57 @@ public class InfoUtil {
 
     private static void addItem(ArrayList<BaseInfoObject> items, final String key, final String value) {
         items.add(new InfoItem(key, value));
+    }
+
+    /**
+     * Return the available memory size in bytes. <br/>
+     * PS: This is usually the same as {@link #getMemoryClass(android.content.Context)} but may be also bigger is some cases, for example for rooted devices with custom builds or when android:largeHeap="true" is set in the Manifest<br/>
+     * PPS: Going over this will crash the app.
+     */
+    public static long getAllowedMemory() {
+        final long defaultValue = 16l * 1024l * 1024l;
+
+        final Runtime runtime = Runtime.getRuntime();
+        if (runtime != null) {
+            final Long value = runtime.maxMemory();
+            if (value == Long.MAX_VALUE) {
+                // No value available
+                return defaultValue;
+            } else {
+                return value;
+            }
+
+        }
+
+        return defaultValue;
+    }
+
+    /**
+     * Gives the device memory class, eg the max memory size in bytes that the app should use.<br/>
+     * PS: Should be equal or smaller than {@link #getAllowedMemory()}<br/>
+     * PPS: Going over this may or may not crash the app depending on the actual #getAllowedMemory() value. But it is strongly advised to stay under this limit.
+     */
+    public static long getMemoryClass(final Context context) {
+        final long defaultValue = 16l * 1024l * 1024l;
+
+        final ActivityManager activityManager = (ActivityManager) context.getSystemService(Activity.ACTIVITY_SERVICE);
+        if (activityManager != null) {
+            long memoryClass = activityManager.getMemoryClass() * 1024l * 1024l;
+            return memoryClass;
+        }
+
+        return defaultValue;
+    }
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    public static int isLowRamDevice(final Context context) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            return LOW_RAM_DEVICE_UNKNOWN;
+        }
+        final ActivityManager activityManager = (ActivityManager) context.getSystemService(Activity.ACTIVITY_SERVICE);
+        if (activityManager == null) {
+            return LOW_RAM_DEVICE_UNKNOWN;
+        }
+        return activityManager.isLowRamDevice() ? LOW_RAM_DEVICE_YES : LOW_RAM_DEVICE_NO;
     }
 }
