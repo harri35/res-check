@@ -40,4 +40,6 @@
     <string name="text_screen_xlarge_caps">XLARGE</string>
     <string name="text_screen_unknown_caps">UNDEFINED</string>
     <string name="screen_size">Screen size</string>
+    <string name="menu_filter">Filter</string>
+    <string name="text_nothing_found">No match for the filter</string>
 </resources>

@@ -2,18 +2,27 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:com.harrikirik.rescheck="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_filter"
+        android:title="@string/menu_filter"
+        android:icon="@drawable/action_search"
+        com.harrikirik.rescheck:showAsAction="collapseActionView|always"
+        com.harrikirik.rescheck:actionViewClass="android.support.v7.widget.SearchView"
+        android:orderInCategory="1"/>
+
     <item
         android:id="@+id/menu_copy_to_clipboard"
         android:title="@string/menu_copy_to_clipboard"
         android:icon="@drawable/content_copy"
-        com.harrikirik.rescheck:showAsAction="always"
-        android:orderInCategory="1"/>
+        com.harrikirik.rescheck:showAsAction="ifRoom"
+        android:orderInCategory="2"/>
 
     <item
         android:id="@+id/menu_share_with"
         android:title="@string/menu_share_with"
         android:icon="@drawable/social_share"
         com.harrikirik.rescheck:showAsAction="ifRoom"
-        android:orderInCategory="2"/>
+        android:orderInCategory="3"/>
 
 </menu>

@@ -11,6 +11,10 @@ public class Log {
         this.tag = tag;
     }
 
+    public static Log getInstance(final Object object) {
+        return getInstance(object.getClass());
+    }
+
     public static Log getInstance(final Class clazz) {
         return getInstance(clazz.getSimpleName());
     }

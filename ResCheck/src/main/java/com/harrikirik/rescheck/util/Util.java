@@ -3,12 +3,21 @@ package com.harrikirik.rescheck.util;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.SearchManager;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.support.v7.widget.SearchView;
+import android.text.InputType;
+import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Toast;
 import com.harrikirik.rescheck.R;
+import android.support.v4.view.MenuItemCompat;
+
 
 public class Util {
 
@@ -110,6 +119,46 @@ public class Util {
             context.startActivity(Intent.createChooser(intent, chooserTitle));
         } catch (Exception e) {
             Log.getInstance(Util.class).e("shareText", e);
+        }
+    }
+
+    public static boolean contains(final String needle, final String heystack) {
+        return !TextUtils.isEmpty(needle) && !TextUtils.isEmpty(heystack) && heystack.contains(needle);
+    }
+
+    public static void setupActionBarSearch(final Activity activity, Menu menu, final String initialValue, final SearchView.OnQueryTextListener queryTextListener) {
+        final SearchManager searchManager = (SearchManager) activity.getSystemService(Context.SEARCH_SERVICE);
+        final MenuItem menuItem =  menu.findItem(R.id.menu_filter);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menuItem);
+        searchView.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+        searchView.setSubmitButtonEnabled(false);
+        searchView.setImeOptions(EditorInfo.IME_ACTION_NONE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(activity.getComponentName()));
+
+        if (!TextUtils.isEmpty(initialValue)) {
+            MenuItemCompat.expandActionView(menuItem);
+            searchView.setQuery(initialValue, false);
+        } else {
+            searchView.setQuery("", false);
+        }
+        searchView.clearFocus();
+        searchView.setOnQueryTextListener(queryTextListener);
+        MenuItemCompat.setOnActionExpandListener(menuItem, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem menuItem) {
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem menuItem) {
+                // Clear the query
+                searchView.setQuery("", false);
+                return true;
+            }
+        });
+
+        if (!TextUtils.isEmpty(initialValue) && queryTextListener != null) {
+            queryTextListener.onQueryTextChange(initialValue);
         }
     }
 }

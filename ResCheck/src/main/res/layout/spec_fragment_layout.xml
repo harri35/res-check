@@ -4,11 +4,18 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal">
+    android:gravity="center">
 
     <ListView
         android:id="@+id/list_spec_info"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+    <TextView
+        android:id="@+id/text_spec_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/text_info_value"
+        android:text="@string/text_nothing_found"/>
 
 </LinearLayout>

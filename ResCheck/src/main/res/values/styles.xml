@@ -75,4 +75,15 @@
         <item name="dropDownListViewStyle">@style/DropDownListView.Rescheck</item>
     </style>
 
+    <style name="text_info_value">
+        <item name="android:textSize">@dimen/text_size_value_item</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="text_info_key">
+        <item name="android:textSize">@dimen/text_size_key_item</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
 </resources>
