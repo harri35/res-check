@@ -59,4 +59,6 @@
     <string name="text_screen_layout_direction">Screen layout direction</string>
     <string name="screen_layout_direction_left_to_right">Left to right</string>
     <string name="screen_layout_direction_right_to_left">Right to left</string>
+    <string name="text_display_name">Display name</string>
+    <string name="text_unknown">Unknown</string>
 </resources>

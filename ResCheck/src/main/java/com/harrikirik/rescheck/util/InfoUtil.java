@@ -66,15 +66,21 @@ public class InfoUtil {
     }
 
     private static ArrayList<BaseInfoObject> getDisplayInfo(final Activity activity) {
-        final Configuration conf = activity.getResources().getConfiguration();
+        final Display display = activity.getWindowManager().getDefaultDisplay();
+        final DisplayMetrics metrics = new DisplayMetrics();
+        display.getMetrics(metrics);
 
         final ArrayList<BaseInfoObject> items = new ArrayList<BaseInfoObject>();
-        final Display display = activity.getWindowManager().getDefaultDisplay();
 
         final InfoCategory cat = new InfoCategory(activity.getString(R.string.text_device_display));
         addItem(items, activity.getString(R.string.text_display_id), String.valueOf(display.getDisplayId()), cat);
-        addItem(items, activity.getString(R.string.text_display_with), activity.getString(R.string.text_x_pixels, String.valueOf(display.getWidth())), cat);
-        addItem(items, activity.getString(R.string.text_display_height), activity.getString(R.string.text_x_pixels, String.valueOf(display.getHeight())), cat);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            addItem(items, activity.getString(R.string.text_display_name), display.getName(), cat);
+        } else {
+            addItem(items, activity.getString(R.string.text_display_name), activity.getString(R.string.text_unknown), cat);
+        }
+        addItem(items, activity.getString(R.string.text_display_with), activity.getString(R.string.text_x_pixels, String.valueOf(metrics.widthPixels)), cat);
+        addItem(items, activity.getString(R.string.text_display_height), activity.getString(R.string.text_x_pixels, String.valueOf(metrics.heightPixels)), cat);
 
         String orientation = activity.getString(R.string.text_orientation_unknown);
         switch (activity.getResources().getConfiguration().orientation) {
@@ -102,11 +108,9 @@ public class InfoUtil {
         display.getMetrics(metrics);
 
         final InfoCategory cat = new InfoCategory(activity.getString(R.string.text_device_screen));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            addItem(items, activity.getString(R.string.text_screen_with), activity.getString(R.string.text_x_dpi, String.valueOf(conf.screenWidthDp)), cat);
-            addItem(items, activity.getString(R.string.text_screen_height), activity.getString(R.string.text_x_dpi, String.valueOf(conf.screenHeightDp)), cat);
-            addItem(items, activity.getString(R.string.text_screen_smallest_width_dp), activity.getString(R.string.text_x_dpi, String.valueOf(conf.smallestScreenWidthDp)), cat);
-        }
+        addItem(items, activity.getString(R.string.text_screen_with), activity.getString(R.string.text_x_dpi, Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2 ? String.valueOf(conf.screenWidthDp) : activity.getString(R.string.text_unknown)), cat);
+        addItem(items, activity.getString(R.string.text_screen_height), activity.getString(R.string.text_x_dpi, Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2 ? String.valueOf(conf.screenHeightDp) : activity.getString(R.string.text_unknown)), cat);
+        addItem(items, activity.getString(R.string.text_screen_smallest_width_dp), Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2 ?  activity.getString(R.string.text_x_dpi, String.valueOf(conf.smallestScreenWidthDp)) : activity.getString(R.string.text_unknown), cat);
 
         items.add(new InfoImageItem(activity.getString(R.string.text_screen_density), R.drawable.icon_dpi, cat));
         addItem(items, activity.getString(R.string.text_screen_density_value_dpi), activity.getString(R.string.text_x_dpi, String.valueOf(metrics.densityDpi)), cat);
@@ -159,6 +163,8 @@ public class InfoUtil {
                 layoutDirectionValue = activity.getString(R.string.screen_layout_direction_right_to_left);
             }
             addItem(items, activity.getString(R.string.text_screen_layout_direction), layoutDirectionValue, cat);
+        } else {
+            addItem(items, activity.getString(R.string.text_screen_layout_direction), activity.getString(R.string.text_unknown), cat);
         }
 
         return items;
