@@ -127,7 +127,7 @@ public class InfoUtil {
             sizeValue = activity.getString(R.string.text_screen_small_caps);
         } else if (screenSize == Configuration.SCREENLAYOUT_SIZE_LARGE) {
             sizeValue = activity.getString(R.string.text_screen_large_caps);
-        } else if (screenSize == 4) {
+        } else if (screenSize == Configuration.SCREENLAYOUT_SIZE_XLARGE) {
             sizeValue = activity.getString(R.string.text_screen_xlarge_caps);
         } else if (screenSize == Configuration.SCREENLAYOUT_SIZE_UNDEFINED) {
             sizeValue = activity.getString(R.string.text_screen_unknown_caps);

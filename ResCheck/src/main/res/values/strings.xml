@@ -39,10 +39,10 @@
     <string name="text_screen_density_value_dpi">Screen density value</string>
     <string name="text_screen_density_value">Screen density value </string>
     <string name="text_screen_scaled_density">Screen scaled density</string>
-    <string name="text_screen_normal_caps">normal</string>
-    <string name="text_screen_small_caps">small</string>
-    <string name="text_screen_large_caps">large</string>
-    <string name="text_screen_xlarge_caps">xlarge</string>
+    <string name="text_screen_normal_caps">Normal</string>
+    <string name="text_screen_small_caps">Small</string>
+    <string name="text_screen_large_caps">Large</string>
+    <string name="text_screen_xlarge_caps">XLarge</string>
     <string name="text_screen_unknown_caps">Undefined</string>
     <string name="screen_size">Screen size</string>
     <string name="menu_filter">Filter</string>
