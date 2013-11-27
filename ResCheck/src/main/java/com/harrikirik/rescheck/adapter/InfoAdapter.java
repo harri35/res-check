@@ -7,9 +7,10 @@ import android.view.ViewGroup;
 import android.widget.*;
 import com.harrikirik.rescheck.R;
 import com.harrikirik.rescheck.dto.BaseInfoObject;
-import com.harrikirik.rescheck.dto.InfoHeader;
+import com.harrikirik.rescheck.dto.InfoCategory;
 import com.harrikirik.rescheck.dto.InfoImageItem;
 import com.harrikirik.rescheck.dto.InfoItem;
+import com.harrikirik.rescheck.util.InfoUtil;
 import com.harrikirik.rescheck.util.Util;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class InfoAdapter extends BaseAdapter implements Filterable {
     public InfoAdapter(final Context context, final ArrayList<BaseInfoObject> items) {
         this.context = context;
         this.items = items;
-        this.filteredItems = items; // No filter at start
+        this.filteredItems = InfoUtil.createCategorizedInfo(items); // No filter at start
     }
 
     @Override
@@ -65,8 +66,8 @@ public class InfoAdapter extends BaseAdapter implements Filterable {
             holder.textTitle.setText(item.getKey().toUpperCase());
             holder.textValue.setText(item.getValue());
         } else if (getItemViewType(position) == ITEM_TYPE_HEADER) {
-            final InfoHeader header = (InfoHeader) getItem(position);
-            holder.textTitle.setText(header.getTitle().toUpperCase());
+            final InfoCategory cat = (InfoCategory) getItem(position);
+            holder.textTitle.setText(cat.getName().toUpperCase());
         } else if (getItemViewType(position) == ITEM_TYPE_IMAGE) {
             final InfoImageItem item = (InfoImageItem) getItem(position);
             holder.textTitle.setText(item.getKey().toUpperCase());
@@ -78,7 +79,7 @@ public class InfoAdapter extends BaseAdapter implements Filterable {
 
     @Override
     public int getItemViewType(int position) {
-        if (getItem(position) instanceof InfoHeader) {
+        if (getItem(position) instanceof InfoCategory) {
             return ITEM_TYPE_HEADER;
         } else if (getItem(position) instanceof InfoImageItem) {
             return ITEM_TYPE_IMAGE;
@@ -149,7 +150,7 @@ public class InfoAdapter extends BaseAdapter implements Filterable {
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            filteredItems = (ArrayList<BaseInfoObject>) results.values;
+            filteredItems = InfoUtil.createCategorizedInfo((ArrayList<BaseInfoObject>) results.values);
             notifyDataSetChanged();
         }
     }

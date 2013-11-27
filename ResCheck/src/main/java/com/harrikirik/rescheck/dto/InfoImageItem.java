@@ -4,18 +4,13 @@ package com.harrikirik.rescheck.dto;
  * Info item containing an image
  * Harri Kirik, harri35@gmail.com
  */
-public class InfoImageItem extends BaseInfoObject{
+public class InfoImageItem extends InfoItem {
     private static final long serialVersionUID = 9074927018674588416L;
-    private String key;
     private int drawableId;
 
-    public InfoImageItem(final String key, final int drawableId) {
-        this.key = key;
+    public InfoImageItem(final String key, final int drawableId, final InfoCategory category) {
+        super(key, null, category);
         this.drawableId = drawableId;
-    }
-
-    public String getKey() {
-        return key;
     }
 
     public int getDrawableId() {

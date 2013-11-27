@@ -8,11 +8,9 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.Display;
+import android.view.View;
 import com.harrikirik.rescheck.R;
-import com.harrikirik.rescheck.dto.BaseInfoObject;
-import com.harrikirik.rescheck.dto.InfoHeader;
-import com.harrikirik.rescheck.dto.InfoImageItem;
-import com.harrikirik.rescheck.dto.InfoItem;
+import com.harrikirik.rescheck.dto.*;
 
 import java.util.ArrayList;
 
@@ -59,23 +57,24 @@ public class InfoUtil {
 
     private static ArrayList<BaseInfoObject> getGeneralDeviceInfo(final Activity activity) {
         final ArrayList<BaseInfoObject> items = new ArrayList<BaseInfoObject>();
-        addHeader(items, activity.getString(R.string.text_device_general_info));
-        addItem(items, activity.getString(R.string.text_model), android.os.Build.MODEL);
-        addItem(items, activity.getString(R.string.text_device), android.os.Build.DEVICE);
-        addItem(items, activity.getString(R.string.text_manufacturer), android.os.Build.MANUFACTURER);
-        addItem(items, activity.getString(R.string.text_product), android.os.Build.PRODUCT);
+        final InfoCategory cat = new InfoCategory(activity.getString(R.string.text_device_general_info));
+        addItem(items, activity.getString(R.string.text_model), android.os.Build.MODEL, cat);
+        addItem(items, activity.getString(R.string.text_device), android.os.Build.DEVICE, cat);
+        addItem(items, activity.getString(R.string.text_manufacturer), android.os.Build.MANUFACTURER, cat);
+        addItem(items, activity.getString(R.string.text_product), android.os.Build.PRODUCT, cat);
         return items;
     }
 
     private static ArrayList<BaseInfoObject> getDisplayInfo(final Activity activity) {
+        final Configuration conf = activity.getResources().getConfiguration();
+
         final ArrayList<BaseInfoObject> items = new ArrayList<BaseInfoObject>();
         final Display display = activity.getWindowManager().getDefaultDisplay();
 
-        addHeader(items, activity.getString(R.string.text_device_display));
-        addItem(items, activity.getString(R.string.text_display_id), String.valueOf(display.getDisplayId()));
-        addItem(items, activity.getString(R.string.text_display_with), String.valueOf(display.getWidth()));
-        addItem(items, activity.getString(R.string.text_display_height), String.valueOf(display.getHeight()));
-
+        final InfoCategory cat = new InfoCategory(activity.getString(R.string.text_device_display));
+        addItem(items, activity.getString(R.string.text_display_id), String.valueOf(display.getDisplayId()), cat);
+        addItem(items, activity.getString(R.string.text_display_with), activity.getString(R.string.text_x_pixels, String.valueOf(display.getWidth())), cat);
+        addItem(items, activity.getString(R.string.text_display_height), activity.getString(R.string.text_x_pixels, String.valueOf(display.getHeight())), cat);
 
         String orientation = activity.getString(R.string.text_orientation_unknown);
         switch (activity.getResources().getConfiguration().orientation) {
@@ -89,24 +88,33 @@ public class InfoUtil {
                 orientation = activity.getString(R.string.text_orientation_square);
                 break;
         }
-        addItem(items, activity.getString(R.string.text_display_orientation), orientation);
+        addItem(items, activity.getString(R.string.text_display_orientation), orientation, cat);
 
         return items;
     }
 
     public static ArrayList<BaseInfoObject> getScreenInfo(final Activity activity) {
+        final Configuration conf = activity.getResources().getConfiguration();
+
         final ArrayList<BaseInfoObject> items = new ArrayList<BaseInfoObject>();
         final Display display = activity.getWindowManager().getDefaultDisplay();
         final DisplayMetrics metrics = new DisplayMetrics();
         display.getMetrics(metrics);
 
-        addHeader(items, activity.getString(R.string.text_device_screen));
-        items.add(new InfoImageItem(activity.getString(R.string.text_screen_density), R.drawable.icon_dpi));
-        addItem(items, activity.getString(R.string.text_screen_density_value_dpi), String.valueOf(metrics.densityDpi));
-        addItem(items, activity.getString(R.string.text_screen_density_value), String.valueOf(metrics.density));
-        addItem(items, activity.getString(R.string.text_screen_scaled_density), String.valueOf(metrics.scaledDensity));
+        final InfoCategory cat = new InfoCategory(activity.getString(R.string.text_device_screen));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            addItem(items, activity.getString(R.string.text_screen_with), activity.getString(R.string.text_x_dpi, String.valueOf(conf.screenWidthDp)), cat);
+            addItem(items, activity.getString(R.string.text_screen_height), activity.getString(R.string.text_x_dpi, String.valueOf(conf.screenHeightDp)), cat);
+            addItem(items, activity.getString(R.string.text_screen_smallest_width_dp), activity.getString(R.string.text_x_dpi, String.valueOf(conf.smallestScreenWidthDp)), cat);
+        }
 
-        final int screenSize = (activity.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK);
+        items.add(new InfoImageItem(activity.getString(R.string.text_screen_density), R.drawable.icon_dpi, cat));
+        addItem(items, activity.getString(R.string.text_screen_density_value_dpi), activity.getString(R.string.text_x_dpi, String.valueOf(metrics.densityDpi)), cat);
+        addItem(items, activity.getString(R.string.text_screen_density_value), String.valueOf(metrics.density), cat);
+        addItem(items, activity.getString(R.string.text_screen_scaled_density), String.valueOf(metrics.scaledDensity), cat);
+        addItem(items, activity.getString(R.string.text_font_scale), String.valueOf(conf.fontScale), cat);
+
+        final int screenSize = (conf.screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK);
 
         String sizeValue = null;
         if (screenSize == Configuration.SCREENLAYOUT_SIZE_NORMAL) {
@@ -120,9 +128,9 @@ public class InfoUtil {
         } else if (screenSize == Configuration.SCREENLAYOUT_SIZE_UNDEFINED) {
             sizeValue = activity.getString(R.string.text_screen_unknown_caps);
         }
-        addItem(items, activity.getString(R.string.screen_size), sizeValue);
+        addItem(items, activity.getString(R.string.screen_size), sizeValue, cat);
 
-        final int screenLength = (activity.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_LONG_MASK);
+        final int screenLength = (conf.screenLayout & Configuration.SCREENLAYOUT_LONG_MASK);
 
         String lengthValue = null;
         if (screenLength == Configuration.SCREENLAYOUT_LONG_YES) {
@@ -132,30 +140,68 @@ public class InfoUtil {
         } else if (screenLength == Configuration.SCREENLAYOUT_LONG_UNDEFINED) {
             lengthValue = activity.getString(R.string.screen_length_unknown_caps);
         }
-        addItem(items, activity.getString(R.string.text_screen_length), lengthValue);
+        addItem(items, activity.getString(R.string.text_screen_length), lengthValue, cat);
+
+
+        String touchScreenValue = activity.getString(R.string.touchscreen_unknown);
+        if (conf.touchscreen == Configuration.TOUCHSCREEN_FINGER) {
+            touchScreenValue = activity.getString(R.string.touchscreen_finger);
+        } else if (conf.touchscreen == Configuration.TOUCHSCREEN_NOTOUCH) {
+            touchScreenValue = activity.getString(R.string.touchscreen_no_touch);
+        }
+        addItem(items, activity.getString(R.string.text_screen_touch_type), touchScreenValue, cat);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            String layoutDirectionValue = null;
+            if (conf.getLayoutDirection() == View.LAYOUT_DIRECTION_LTR) {
+                layoutDirectionValue = activity.getString(R.string.screen_layout_direction_left_to_right);
+            } else if (conf.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
+                layoutDirectionValue = activity.getString(R.string.screen_layout_direction_right_to_left);
+            }
+            addItem(items, activity.getString(R.string.text_screen_layout_direction), layoutDirectionValue, cat);
+        }
 
         return items;
     }
 
     public static ArrayList<BaseInfoObject> getMemoryInfo(final Activity activity) {
         final ArrayList<BaseInfoObject> items = new ArrayList<BaseInfoObject>();
-        addHeader(items, activity.getString(R.string.text_device_memory));
-        addItem(items, activity.getString(R.string.text_device_memory_class_mb), activity.getString(R.string.text_x_mb, String.valueOf(getMemoryClass(activity) / 1024d / 1024d)));
-        addItem(items, activity.getString(R.string.text_device_max_memory_mb), activity.getString(R.string.text_x_mb, String.valueOf((getAllowedMemory() / 1024d / 1024d))));
-        addItem(items, activity.getString(R.string.text_low_ram_device), activity.getString(isLowRamDevice(activity)));
+        final InfoCategory cat = new InfoCategory(activity.getString(R.string.text_device_memory));
+        addItem(items, activity.getString(R.string.text_device_memory_class_mb), activity.getString(R.string.text_x_mb, String.valueOf(getMemoryClass(activity) / 1024d / 1024d)), cat);
+        addItem(items, activity.getString(R.string.text_device_max_memory_mb), activity.getString(R.string.text_x_mb, String.valueOf((getAllowedMemory() / 1024d / 1024d))), cat);
+        addItem(items, activity.getString(R.string.text_low_ram_device), activity.getString(isLowRamDevice(activity)), cat);
         return items;
+    }
+
+    public static ArrayList<BaseInfoObject> createCategorizedInfo(final ArrayList<BaseInfoObject> items) {
+        final ArrayList<BaseInfoObject> catItems = new ArrayList<BaseInfoObject>();
+        if (items == null || items.size() == 0) {
+            return catItems;
+        }
+
+        // Assume info is grouped by category already
+        InfoCategory cat = null;
+        for (BaseInfoObject o : items) {
+            if (o instanceof CategorisedInfoItem && !((CategorisedInfoItem) o).getCategory().equals(cat)) {
+                cat = new InfoCategory(((CategorisedInfoItem) o).getCategory().getName());
+                catItems.add(cat);
+            }
+            catItems.add(o);
+        }
+
+        return catItems;
     }
 
     public static String getFullInfoString(final Activity activity) {
         final StringBuilder builder = new StringBuilder();
-        final ArrayList<BaseInfoObject> items = getFullInfo(activity);
+        final ArrayList<BaseInfoObject> items = createCategorizedInfo(getFullInfo(activity));
         for (BaseInfoObject item : items) {
             if (item instanceof InfoImageItem) {
                 // Skip
                 continue;
             }
 
-            if (item instanceof InfoHeader && builder.length() != 0) {
+            if (item instanceof InfoCategory && builder.length() != 0) {
                 builder.append("\n\n");
             } else if (builder.length() != 0) {
                 builder.append("\n");
@@ -166,12 +212,8 @@ public class InfoUtil {
         return builder.toString();
     }
 
-    private static void addHeader(ArrayList<BaseInfoObject> items, final String text) {
-        items.add(new InfoHeader(text));
-    }
-
-    private static void addItem(ArrayList<BaseInfoObject> items, final String key, final String value) {
-        items.add(new InfoItem(key, value));
+    private static void addItem(ArrayList<BaseInfoObject> items, final String key, final String value, final InfoCategory cat) {
+        items.add(new InfoItem(key, value, cat));
     }
 
     /**
