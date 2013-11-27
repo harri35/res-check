@@ -6,8 +6,6 @@
               android:layout_height="wrap_content"
               android:minHeight="@dimen/min_info_item_height"
               android:padding="@dimen/general_ui_padding"
-              android:paddingLeft="25dip"
-              android:paddingRight="25dip"
               android:gravity="center_vertical">
 
     <TextView

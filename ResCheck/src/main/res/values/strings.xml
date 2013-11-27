@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">ResCheck</string>
     <string name="menu_copy_to_clipboard">Copy to Clipboard</string>
     <string name="menu_share_with">Share with ..</string>
@@ -61,4 +62,6 @@
     <string name="screen_layout_direction_right_to_left">Right to left</string>
     <string name="text_display_name">Display name</string>
     <string name="text_unknown">Unknown</string>
+    <string name="title_activity_detail">DetailActivity</string>
+
 </resources>
