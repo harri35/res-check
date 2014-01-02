@@ -66,6 +66,7 @@ public class InfoUtil {
         return items;
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     private static ArrayList<BaseInfoObject> getDisplayInfo(final Activity activity) {
         final Display display = activity.getWindowManager().getDefaultDisplay();
         final DisplayMetrics metrics = new DisplayMetrics();
@@ -100,7 +101,7 @@ public class InfoUtil {
         return items;
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public static ArrayList<BaseInfoObject> getScreenInfo(final Activity activity) {
         final Configuration conf = activity.getResources().getConfiguration();
 
