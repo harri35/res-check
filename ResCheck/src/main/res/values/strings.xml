@@ -29,7 +29,6 @@
     <string name="text_x_mb">%1$s MB</string>
     <string name="text_x_pixels">%1$s pixels</string>
     <string name="text_x_dpi">%1$s dp</string>
-    <string name="text_x_sp">%1$s sp</string>
     <string name="text_screen_length">Screen length</string>
     <string name="screen_length_long_caps">Long</string>
     <string name="screen_length_notlong_caps">Not long</string>

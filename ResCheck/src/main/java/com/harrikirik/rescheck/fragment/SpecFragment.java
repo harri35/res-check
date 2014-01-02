@@ -55,17 +55,28 @@ public class SpecFragment extends Fragment {
             return;
         }
         final ArrayList<BaseInfoObject> items = InfoUtil.getFullInfo(getActivity());
-        listSpec.setAdapter(new InfoAdapter(getActivity().getApplicationContext(), items));
+        final InfoAdapter adapter = new InfoAdapter(getActivity().getApplicationContext(), items);
+        listSpec.setAdapter(adapter);
         listSpec.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Util.copyToClipboard(getActivity(), items.get(position).toPrintableString(), true);
+                final Object o = adapter.getItem(position);
+                if (!(o instanceof BaseInfoObject)) {
+                    // Something is wrong here
+                    return;
+                }
+                Util.copyToClipboard(getActivity(), ((BaseInfoObject) o).toPrintableString(), true);
             }
         });
         listSpec.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Util.shareText(getActivity(), getActivity().getString(R.string.title_share_with), items.get(position).toPrintableString());
+                final Object o = adapter.getItem(position);
+                if (!(o instanceof BaseInfoObject)) {
+                    // Something is wrong here
+                    return false;
+                }
+                Util.shareText(getActivity(), getActivity().getString(R.string.title_share_with), ((BaseInfoObject) o).toPrintableString());
                 return true;
             }
         });

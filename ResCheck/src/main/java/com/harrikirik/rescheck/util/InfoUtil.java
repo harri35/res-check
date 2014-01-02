@@ -1,5 +1,6 @@
 package com.harrikirik.rescheck.util;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -99,6 +100,7 @@ public class InfoUtil {
         return items;
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     public static ArrayList<BaseInfoObject> getScreenInfo(final Activity activity) {
         final Configuration conf = activity.getResources().getConfiguration();
 
