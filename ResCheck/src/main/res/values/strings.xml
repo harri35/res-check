@@ -12,6 +12,9 @@
     <string name="text_device">Device</string>
     <string name="text_manufacturer">Manufacturer</string>
     <string name="text_product">Product</string>
+    <string name="text_api_level">API Level</string>
+    <string name="text_api_level_x_y">%1$s (%2$s)</string>
+    <string name="text_build_version">Build version</string>
     <string name="text_device_display">Device display</string>
     <string name="text_display_id">Display id</string>
     <string name="text_display_with">Screen width</string>

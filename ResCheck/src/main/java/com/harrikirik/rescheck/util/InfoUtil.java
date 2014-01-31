@@ -1,12 +1,12 @@
 package com.harrikirik.rescheck.util;
 
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.View;
@@ -60,10 +60,84 @@ public class InfoUtil {
         final ArrayList<BaseInfoObject> items = new ArrayList<BaseInfoObject>();
         final InfoCategory cat = new InfoCategory(activity.getString(R.string.text_device_general_info));
         addItem(items, activity.getString(R.string.text_model), android.os.Build.MODEL, cat);
-        addItem(items, activity.getString(R.string.text_device), android.os.Build.DEVICE, cat);
+        addItem(items, activity.getString(R.string.text_build_version), getBuildVersionName(activity), cat);
+        addItem(items, activity.getString(R.string.text_api_level), getAndroidVersionName(activity), cat);
         addItem(items, activity.getString(R.string.text_manufacturer), android.os.Build.MANUFACTURER, cat);
+        addItem(items, activity.getString(R.string.text_device), android.os.Build.DEVICE, cat);
         addItem(items, activity.getString(R.string.text_product), android.os.Build.PRODUCT, cat);
         return items;
+    }
+
+    private static String getBuildVersionName(final Context context) {
+        return TextUtils.equals(Build.VERSION.CODENAME, "REL") ? Build.VERSION.RELEASE : Build.VERSION.CODENAME;
+    }
+
+    private static String getAndroidVersionName(final Context context) {
+        final int versionInt = Build.VERSION.SDK_INT;
+        String versionName = null;
+        switch (versionInt) {
+            case Build.VERSION_CODES.JELLY_BEAN:
+                versionName = "JELLY BEAN";
+                break;
+            case Build.VERSION_CODES.JELLY_BEAN_MR1:
+                versionName = "JELLY BEAN MR1";
+                break;
+            case Build.VERSION_CODES.JELLY_BEAN_MR2:
+                versionName = "JELLY BEAN MR2";
+                break;
+            case Build.VERSION_CODES.HONEYCOMB:
+                versionName = "HONEYCOMB";
+                break;
+            case Build.VERSION_CODES.ICE_CREAM_SANDWICH:
+                versionName = "ICE CREAM SANDWICH";
+                break;
+            case Build.VERSION_CODES.BASE:
+                versionName = "BASE";
+                break;
+            case Build.VERSION_CODES.CUPCAKE:
+                versionName = "CUPCAKE";
+                break;
+            case Build.VERSION_CODES.CUR_DEVELOPMENT:
+                versionName = "CUR DEVELOPMENT";
+                break;
+            case Build.VERSION_CODES.DONUT:
+                versionName = "DONUT";
+                break;
+            case Build.VERSION_CODES.ECLAIR:
+                versionName = "ECLAIR";
+                break;
+            case Build.VERSION_CODES.ECLAIR_0_1:
+                versionName = "ECLAIR 0 1";
+                break;
+            case Build.VERSION_CODES.ECLAIR_MR1:
+                versionName = "ECLAIR MR1";
+                break;
+            case Build.VERSION_CODES.FROYO:
+                versionName = "FROYO";
+                break;
+            case Build.VERSION_CODES.GINGERBREAD:
+                versionName = "GINGERBREAD";
+                break;
+            case Build.VERSION_CODES.GINGERBREAD_MR1:
+                versionName = "GINGERBREAD MR1";
+                break;
+            case Build.VERSION_CODES.HONEYCOMB_MR1:
+                versionName = "HONEYCOMB MR1";
+                break;
+            case Build.VERSION_CODES.HONEYCOMB_MR2:
+                versionName = "HONEYCOMB MR2";
+                break;
+            case Build.VERSION_CODES.KITKAT:
+                versionName = "KITKAT";
+                break;
+            case Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1:
+                versionName = "ICE CREAM SANDWICH MR1";
+                break;
+            case Build.VERSION_CODES.BASE_1_1:
+                versionName = "BASE 1 1";
+                break;
+        }
+        return !TextUtils.isEmpty(versionName) ? context.getString(R.string.text_api_level_x_y, String.valueOf(versionInt), versionName) : String.valueOf(versionInt);
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
