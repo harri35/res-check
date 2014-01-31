@@ -137,7 +137,7 @@ public class InfoUtil {
                 versionName = "BASE 1 1";
                 break;
         }
-        return !TextUtils.isEmpty(versionName) ? context.getString(R.string.text_api_level_x_y, String.valueOf(versionInt), versionName) : String.valueOf(versionInt);
+        return !TextUtils.isEmpty(versionName) ? context.getString(R.string.text_api_level_x_y, Integer.toString(versionInt), versionName.toString()) : String.valueOf(versionInt);
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
