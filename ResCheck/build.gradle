@@ -15,6 +15,10 @@ repositories {
 android {
     compileSdkVersion 21
     buildToolsVersion "21.0.1"
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
 	signingConfigs {
         defaultSigning {
 			if (project.hasProperty('storeFilePath')) {
@@ -54,6 +58,9 @@ android {
         versionName project.version
         versionCode Integer.valueOf(System.getProperty("versionCode", "1"))
         signingConfig signingConfigs.defaultSigning
+    }
+    lintOptions {
+        abortOnError true
     }
 }
 

@@ -71,5 +71,8 @@
     <string name="text_supported_abis">Supported ABIs</string>
     <string name="text_cpu_abi_1">CPU ABI:</string>
     <string name="text_cpu_abi_2">CPU ABI2:</string>
+    <string name="text_graphics">Graphics</string>
+    <string name="text_openg_gl_version">OpenGL version</string>
+    <string name="text_opengl_es">"OpenGL ES %1$s"</string>
 
 </resources>

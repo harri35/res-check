@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.pm.ConfigurationInfo;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.text.TextUtils;
@@ -60,9 +61,16 @@ public class InfoUtil {
             log.e("getFullInfo -> getABIInfo", e);
         }
 
+        try {
+            items.addAll(getGraphicsInfo(activity));
+        } catch (Exception e) {
+            log.e("getFullInfo -> getGraphicsInfo", e);
+        }
+
         return items;
     }
 
+    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     private static ArrayList<BaseInfoObject> getGeneralDeviceInfo(final Activity activity) {
         final ArrayList<BaseInfoObject> items = new ArrayList<BaseInfoObject>();
         final InfoCategory cat = new InfoCategory(activity.getString(R.string.text_device_general_info));
@@ -72,8 +80,11 @@ public class InfoUtil {
         addItem(items, activity.getString(R.string.text_manufacturer), Build.MANUFACTURER, cat);
         addItem(items, activity.getString(R.string.text_device), Build.DEVICE, cat);
         addItem(items, activity.getString(R.string.text_product), Build.PRODUCT, cat);
-        addItem(items, activity.getString(R.string.text_serial), Build.SERIAL, cat);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+            addItem(items, activity.getString(R.string.text_serial), Build.SERIAL, cat);
+        }
         addItem(items, activity.getString(R.string.text_build_tags), Build.TAGS, cat);
+
         return items;
     }
 
@@ -87,6 +98,15 @@ public class InfoUtil {
             addItem(items, activity.getString(R.string.text_cpu_abi_1), Build.CPU_ABI, cat);
             addItem(items, activity.getString(R.string.text_cpu_abi_2), Build.CPU_ABI2, cat);
         }
+        return items;
+    }
+
+    private static ArrayList<BaseInfoObject> getGraphicsInfo(final Activity activity) {
+        final ArrayList<BaseInfoObject> items = new ArrayList<BaseInfoObject>();
+        final InfoCategory cat = new InfoCategory(activity.getString(R.string.text_graphics));
+        final ActivityManager am = (ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE);
+        ConfigurationInfo info = am.getDeviceConfigurationInfo();
+        addItem(items, activity.getString(R.string.text_openg_gl_version), activity.getString(R.string.text_opengl_es, info.getGlEsVersion()), cat);
         return items;
     }
 
