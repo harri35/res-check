@@ -3,18 +3,18 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.9.+'
+        classpath 'com.android.tools.build:gradle:0.12.+'
     }
 }
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 
 repositories {
     mavenCentral()
 }
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion "19.0.3"
+    compileSdkVersion 21
+    buildToolsVersion "21.0.1"
 	signingConfigs {
         defaultSigning {
 			if (project.hasProperty('storeFilePath')) {
@@ -50,7 +50,7 @@ android {
     }
 
 	defaultConfig {
-        packageName "com.harrikirik.rescheck"
+        applicationId "com.harrikirik.rescheck"
         versionName project.version
         versionCode Integer.valueOf(System.getProperty("versionCode", "1"))
         signingConfig signingConfigs.defaultSigning

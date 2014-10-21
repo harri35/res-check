@@ -65,5 +65,11 @@
     <string name="text_display_name">Display name</string>
     <string name="text_unknown">Unknown</string>
     <string name="title_activity_detail">DetailActivity</string>
+    <string name="text_build_tags">Build tags</string>
+    <string name="text_serial">Serial</string>
+    <string name="text_application_binary_interface">Device ABI</string>
+    <string name="text_supported_abis">Supported ABIs</string>
+    <string name="text_cpu_abi_1">CPU ABI:</string>
+    <string name="text_cpu_abi_2">CPU ABI2:</string>
 
 </resources>

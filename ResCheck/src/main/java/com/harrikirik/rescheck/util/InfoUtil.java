@@ -14,6 +14,7 @@ import com.harrikirik.rescheck.R;
 import com.harrikirik.rescheck.dto.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Util class to get the actual device info
@@ -53,18 +54,39 @@ public class InfoUtil {
             log.e("getFullInfo -> getMemoryInfo", e);
         }
 
+        try {
+            items.addAll(getABIInfo(activity));
+        } catch (Exception e) {
+            log.e("getFullInfo -> getABIInfo", e);
+        }
+
         return items;
     }
 
     private static ArrayList<BaseInfoObject> getGeneralDeviceInfo(final Activity activity) {
         final ArrayList<BaseInfoObject> items = new ArrayList<BaseInfoObject>();
         final InfoCategory cat = new InfoCategory(activity.getString(R.string.text_device_general_info));
-        addItem(items, activity.getString(R.string.text_model), android.os.Build.MODEL, cat);
+        addItem(items, activity.getString(R.string.text_model), Build.MODEL, cat);
         addItem(items, activity.getString(R.string.text_build_version), getBuildVersionName(activity), cat);
         addItem(items, activity.getString(R.string.text_api_level), getAndroidVersionName(activity), cat);
-        addItem(items, activity.getString(R.string.text_manufacturer), android.os.Build.MANUFACTURER, cat);
-        addItem(items, activity.getString(R.string.text_device), android.os.Build.DEVICE, cat);
-        addItem(items, activity.getString(R.string.text_product), android.os.Build.PRODUCT, cat);
+        addItem(items, activity.getString(R.string.text_manufacturer), Build.MANUFACTURER, cat);
+        addItem(items, activity.getString(R.string.text_device), Build.DEVICE, cat);
+        addItem(items, activity.getString(R.string.text_product), Build.PRODUCT, cat);
+        addItem(items, activity.getString(R.string.text_serial), Build.SERIAL, cat);
+        addItem(items, activity.getString(R.string.text_build_tags), Build.TAGS, cat);
+        return items;
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private static ArrayList<BaseInfoObject> getABIInfo(final Activity activity) {
+        final ArrayList<BaseInfoObject> items = new ArrayList<BaseInfoObject>();
+        final InfoCategory cat = new InfoCategory(activity.getString(R.string.text_application_binary_interface));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            addItem(items, activity.getString(R.string.text_supported_abis), Arrays.toString(Build.SUPPORTED_ABIS), cat);
+        } else {
+            addItem(items, activity.getString(R.string.text_cpu_abi_1), Build.CPU_ABI, cat);
+            addItem(items, activity.getString(R.string.text_cpu_abi_2), Build.CPU_ABI2, cat);
+        }
         return items;
     }
 
@@ -135,6 +157,9 @@ public class InfoUtil {
                 break;
             case Build.VERSION_CODES.BASE_1_1:
                 versionName = "BASE 1 1";
+                break;
+            case Build.VERSION_CODES.LOLLIPOP:
+                versionName = "LOLLIPOP";
                 break;
         }
         return !TextUtils.isEmpty(versionName) ? context.getString(R.string.text_api_level_x_y, Integer.toString(versionInt), versionName.toString()) : String.valueOf(versionInt);
