@@ -66,5 +66,5 @@ android {
 
 dependencies {
     // For Google ActionBar
-	compile "com.android.support:appcompat-v7:18.0.+"
+	compile "com.android.support:appcompat-v7:18.0.0"
 }
