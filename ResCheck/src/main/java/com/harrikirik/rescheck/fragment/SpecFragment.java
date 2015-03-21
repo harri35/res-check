@@ -42,7 +42,7 @@ public class SpecFragment extends Fragment implements InfoAdapter.InfoAdapterLis
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        final View view = inflater.inflate(R.layout.spec_fragment_layout, null);
+        final View view = inflater.inflate(R.layout.spec_fragment_layout, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_spec_info);
         recyclerView.setHasFixedSize(true);
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));

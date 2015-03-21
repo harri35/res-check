@@ -37,7 +37,7 @@ allprojects {
 
         // VersionCode
         if (suppliedBuildNumber == null || suppliedBuildNumber.equals("") || suppliedBuildNumber.equals("null")) {
-            project.ext.versionCode = 1
+            project.ext.versionCode = Integer.valueOf(System.getProperty("versionCode", "1"))
         } else {
             project.ext.versionCode = Integer.valueOf(suppliedBuildNumber)
         }

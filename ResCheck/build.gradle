@@ -43,10 +43,12 @@ android {
 			}
 
 			println '\n\n'
-			println 'CONF: release storeFile is set to ' + storeFile
-			println 'CONF: release storePassword is set to ' + storePassword
-			println 'CONF: release keyAlias is set to ' + keyAlias
-			println 'CONF: release keyPassword is set to ' + keyPassword
+			println 'CONF: build storeFile is set to ' + storeFile
+			println 'CONF: build storePassword is set to ' + storePassword
+			println 'CONF: build keyAlias is set to ' + keyAlias
+			println 'CONF: build keyPassword is set to ' + keyPassword
+            println 'CONF: build versionName is set to ' + project.ext.versionName
+            println 'CONF: build versionCode is set to ' + project.ext.versionCode
         }
     }
 

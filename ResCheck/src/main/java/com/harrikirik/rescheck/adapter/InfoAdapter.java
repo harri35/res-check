@@ -115,7 +115,7 @@ public class InfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
         final String name = ((CategorisedInfoItem) item).getCategory().getName();
         if (!headerIds.containsKey(name)) {
-            headerIds.put(name, new Long(headerIds.size()));
+            headerIds.put(name, Long.valueOf(headerIds.size()));
         }
 
         return headerIds.get(name);
@@ -164,12 +164,12 @@ public class InfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                 // No filter
                 filteredItems.addAll(items);
             } else {
-                final String needle = constraint.toString().toLowerCase();
+                final String needle = constraint.toString().toLowerCase(Locale.ENGLISH);
                 // We have a filter
                 for (BaseInfoObject o : items) {
                     if (o instanceof InfoItem && (Util.containsIgnoreCase(needle, ((InfoItem) o).getValue()) || Util.containsIgnoreCase(needle, ((InfoItem) o).getKey()))) {
                         filteredItems.add(o);
-                    } else if (o instanceof InfoImageItem && Util.containsIgnoreCase(needle, ((InfoImageItem) o).getKey().toLowerCase())) {
+                    } else if (o instanceof InfoImageItem && Util.containsIgnoreCase(needle, ((InfoImageItem) o).getKey())) {
                         filteredItems.add(o);
                     }
                     // No headers needed for now ..
