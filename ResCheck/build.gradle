@@ -52,6 +52,8 @@ android {
 
 	defaultConfig {
         applicationId "com.harrikirik.rescheck"
+        minSdkVersion 14
+        targetSdkVersion 22
         versionName project.ext.versionName
         versionCode project.ext.versionCode
         signingConfig signingConfigs.defaultSigning
@@ -77,4 +79,6 @@ build.mustRunAfter clean
 dependencies {
     // For Google ActionBar
 	compile "com.android.support:appcompat-v7:22.0.0"
+    compile 'com.android.support:recyclerview-v7:21.0.3'
+    compile 'com.timehop.stickyheadersrecyclerview:library:0.3.6@aar'
 }
