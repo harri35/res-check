@@ -1,9 +1,6 @@
 buildscript {
     repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:1.1.0'
+        jcenter()
     }
 }
 apply plugin: 'com.android.application'
@@ -55,14 +52,27 @@ android {
 
 	defaultConfig {
         applicationId "com.harrikirik.rescheck"
-        versionName project.version
-        versionCode Integer.valueOf(System.getProperty("versionCode", "1"))
+        versionName project.ext.versionName
+        versionCode project.ext.versionCode
         signingConfig signingConfigs.defaultSigning
     }
     lintOptions {
+        checkReleaseBuilds true
         abortOnError true
     }
 }
+
+def GROUP_BUILD_TASKS = 'Build'
+task buildGreenhouseDebug(dependsOn: ['clean', 'build'])
+buildGreenhouseDebug.group = GROUP_BUILD_TASKS
+buildGreenhouseDebug.description = "Build and publish the debug version with GreenhouseCI"
+
+task buildGreenhouseRelease(dependsOn: ['buildGreenhouseDebug'])
+buildGreenhouseRelease.group = GROUP_BUILD_TASKS
+buildGreenhouseRelease.description = "Build and publish the release version with GreenhouseCI"
+
+build.mustRunAfter clean
+
 
 dependencies {
     // For Google ActionBar
