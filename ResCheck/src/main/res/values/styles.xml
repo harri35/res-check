@@ -34,62 +34,14 @@
 
         <item name="android:windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
+
+        <!-- Overflow icon -->
+        <item name="actionOverflowButtonStyle">@style/AppTheme.OverFlowMenuStyle</item>
     </style>
 
-    <style name="Theme.Rescheck2" parent="@style/Theme.AppCompat">
-        <item name="actionBarItemBackground">@drawable/selectable_background_rescheck</item>
-        <item name="popupMenuStyle">@style/PopupMenu.Rescheck</item>
-        <item name="dropDownListViewStyle">@style/DropDownListView.Rescheck</item>
-        <item name="actionBarTabStyle">@style/ActionBarTabStyle.Rescheck</item>
-        <item name="actionDropDownStyle">@style/DropDownNav.Rescheck</item>
-        <item name="actionBarStyle">@style/ActionBar.Solid.Rescheck</item>
-        <item name="actionModeBackground">@drawable/cab_background_top_rescheck</item>
-        <item name="actionModeSplitBackground">@drawable/cab_background_bottom_rescheck</item>
-        <item name="actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Rescheck</item>
-    </style>
-
-    <style name="ActionBar.Solid.Rescheck" parent="@style/Widget.AppCompat.ActionBar.Solid">
-        <item name="background">@drawable/ab_solid_rescheck</item>
-        <item name="backgroundStacked">@drawable/ab_stacked_solid_rescheck</item>
-        <item name="backgroundSplit">@drawable/ab_bottom_solid_rescheck</item>
-        <item name="progressBarStyle">@style/ProgressBar.Rescheck</item>
-    </style>
-
-    <style name="ActionBar.Transparent.Rescheck" parent="@style/Widget.AppCompat.ActionBar">
-        <item name="background">@drawable/ab_transparent_rescheck</item>
-        <item name="progressBarStyle">@style/ProgressBar.Rescheck</item>
-    </style>
-	
-    <style name="PopupMenu.Rescheck" parent="@style/Widget.AppCompat.PopupMenu">
-        <item name="android:popupBackground">@drawable/menu_dropdown_panel_rescheck</item>	
-    </style>
-	
-    <style name="DropDownListView.Rescheck" parent="@style/Widget.AppCompat.ListView.DropDown">
-        <item name="android:listSelector">@drawable/selectable_background_rescheck</item>
-    </style>
-
-    <style name="ActionBarTabStyle.Rescheck" parent="@style/Widget.AppCompat.ActionBar.TabView">
-        <item name="android:background">@drawable/tab_indicator_ab_rescheck</item>
-    </style>
-	
-    <style name="DropDownNav.Rescheck" parent="@style/Widget.AppCompat.Spinner.DropDown.ActionBar">
-        <item name="android:background">@drawable/spinner_background_ab_rescheck</item>
-        <item name="android:popupBackground">@drawable/menu_dropdown_panel_rescheck</item>
-        <item name="android:dropDownSelector">@drawable/selectable_background_rescheck</item>
-    </style>
-    
-    <style name="ProgressBar.Rescheck" parent="@style/Widget.AppCompat.ProgressBar.Horizontal">
-        <item name="android:progressDrawable">@drawable/progress_horizontal_rescheck</item>
-    </style>
-    
-    <style name="ActionButton.CloseMode.Rescheck" parent="@style/Widget.AppCompat.ActionButton.CloseMode">
-        <item name="android:background">@drawable/btn_cab_done_rescheck</item>
-    </style>
-    
-    <!-- this style is only referenced in a Light.DarkActionBar based theme -->
-    <style name="Theme.Rescheck.Widget" parent="@style/Theme.AppCompat">
-        <item name="popupMenuStyle">@style/PopupMenu.Rescheck</item>
-        <item name="dropDownListViewStyle">@style/DropDownListView.Rescheck</item>
+    <!-- Custom overflow -->
+    <style name="AppTheme.OverFlowMenuStyle" parent="@style/Widget.AppCompat.Light.ActionButton.Overflow">
+        <item name="android:src">@drawable/ic_more_vert_white_24dp</item>
     </style>
 
     <style name="text_info_value">
