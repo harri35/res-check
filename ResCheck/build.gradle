@@ -58,6 +58,17 @@ android {
         versionCode project.ext.versionCode
         signingConfig signingConfigs.defaultSigning
     }
+    buildTypes {
+        release {
+            // Set the next line to TRUE to enable proguard
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+
+        debug {
+            signingConfig signingConfigs.defaultSigning
+        }
+    }
     lintOptions {
         checkReleaseBuilds true
         abortOnError true
