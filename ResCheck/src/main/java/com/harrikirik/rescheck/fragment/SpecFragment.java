@@ -1,5 +1,6 @@
 package com.harrikirik.rescheck.fragment;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -73,7 +74,9 @@ public class SpecFragment extends Fragment implements InfoAdapter.InfoAdapterLis
         final ArrayList<BaseInfoObject> items = InfoUtil.getFullInfo(getActivity());
         final InfoAdapter adapter = new InfoAdapter(getActivity().getApplicationContext(), items, this);
         recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new StickyRecyclerHeadersDecoration(adapter));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            recyclerView.addItemDecoration(new StickyRecyclerHeadersDecoration(adapter));
+        }
     }
 
     @Override
