@@ -54,7 +54,7 @@ android {
 
 	defaultConfig {
         applicationId "com.harrikirik.rescheck"
-        minSdkVersion 14
+        minSdkVersion 8
         targetSdkVersion 22
         versionName project.ext.versionName
         versionCode project.ext.versionCode
