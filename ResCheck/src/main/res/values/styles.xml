@@ -34,6 +34,7 @@
 
         <item name="android:windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
+        <item name="android:windowBackground">@color/background_1</item>
 
         <!-- Overflow icon -->
         <item name="actionOverflowButtonStyle">@style/AppTheme.OverFlowMenuStyle</item>

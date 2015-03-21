@@ -1,116 +1,149 @@
 package com.harrikirik.rescheck.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.Filter;
+import android.widget.Filterable;
+import android.widget.ImageView;
+import android.widget.TextView;
+
 import com.harrikirik.rescheck.R;
 import com.harrikirik.rescheck.dto.BaseInfoObject;
-import com.harrikirik.rescheck.dto.InfoCategory;
+import com.harrikirik.rescheck.dto.CategorisedInfoItem;
 import com.harrikirik.rescheck.dto.InfoImageItem;
 import com.harrikirik.rescheck.dto.InfoItem;
-import com.harrikirik.rescheck.util.InfoUtil;
+import com.harrikirik.rescheck.util.Log;
 import com.harrikirik.rescheck.util.Util;
+import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * Adapter for info items.
  * Harri Kirik, harri35@gmail.com
  */
-public class InfoAdapter extends BaseAdapter implements Filterable {
-    private static final int ITEM_TYPE_COUNT = 3;
-    private static final int ITEM_TYPE_DATA = 0;
-    private static final int ITEM_TYPE_HEADER = 1;
-    private static final int ITEM_TYPE_IMAGE = 2;
+public class InfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Filterable, StickyRecyclerHeadersAdapter<InfoAdapter.HeaderViewHolder> {
+    private static final int ITEM_TYPE_DATA = 100;
+    private static final int ITEM_TYPE_IMAGE = 101;
+    private final InfoAdapterListener listener;
 
     private Context context;
     private ArrayList<BaseInfoObject> items;
     private ArrayList<BaseInfoObject> filteredItems;
     private InfoFilter filter;
+    private HashMap<String, Long> headerIds = new HashMap<>();
+    private Log log = Log.getInstance(this);
 
-    public InfoAdapter(final Context context, final ArrayList<BaseInfoObject> items) {
+    public InfoAdapter(final Context context, final ArrayList<BaseInfoObject> items, final InfoAdapterListener listener) {
         this.context = context;
         this.items = items;
-        this.filteredItems = InfoUtil.createCategorizedInfo(items); // No filter at start
+        this.filteredItems = new ArrayList<>();
+        this.filteredItems.addAll(this.items);
+        this.listener = listener;
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder = null;
-        if (convertView == null) {
-            holder = new ViewHolder();
-            // View not yet created
-            if (getItemViewType(position) == ITEM_TYPE_DATA) {
-                convertView = View.inflate(context, R.layout.info_item, null);
-                holder.textTitle = (TextView) convertView.findViewById(R.id.text_key);
-                holder.textValue = (TextView) convertView.findViewById(R.id.text_value);
-            } else if (getItemViewType(position) == ITEM_TYPE_HEADER) {
-                convertView = View.inflate(context, R.layout.info_header, null);
-                holder.textTitle = (TextView) convertView.findViewById(R.id.text_header);
-            } else if (getItemViewType(position) == ITEM_TYPE_IMAGE) {
-                convertView = View.inflate(context, R.layout.info_image_item, null);
-                holder.textTitle = (TextView) convertView.findViewById(R.id.text_key);
-                holder.imageValue = (ImageView) convertView.findViewById(R.id.image_value);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        switch (viewType) {
+            case ITEM_TYPE_DATA: {
+                return new DataViewHolder(LayoutInflater.from(context).inflate(R.layout.info_item, parent, false));
             }
-            convertView.setTag(holder);
-        } else {
-            // View created, fetch the holder
-            holder = (ViewHolder) convertView.getTag();
+            case ITEM_TYPE_IMAGE: {
+                return new ImageViewHolder(LayoutInflater.from(context).inflate(R.layout.info_image_item, parent, false));
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public HeaderViewHolder onCreateHeaderViewHolder(ViewGroup viewGroup) {
+        final View v = LayoutInflater.from(context).inflate(R.layout.info_header, viewGroup, false);
+        return new HeaderViewHolder(v);
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        final BaseInfoObject item = getItem(position);
+        if (holder instanceof DataViewHolder) {
+            ((DataViewHolder) holder).textTitle.setText(((InfoItem) item).getKey().toUpperCase(Locale.ENGLISH));
+            ((DataViewHolder) holder).textValue.setText(((InfoItem) item).getValue());
+        } else if (holder instanceof ImageViewHolder) {
+            ((ImageViewHolder) holder).textTitle.setText(((InfoImageItem) item).getKey().toUpperCase(Locale.ENGLISH));
+            ((ImageViewHolder) holder).imageValue.setImageResource(((InfoImageItem) item).getDrawableId());
+        }
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener != null) {
+                    listener.onItemClick(item);
+                }
+            }
+        });
+
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (listener != null) {
+                    listener.onItemLongClick(item);
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public void onBindHeaderViewHolder(HeaderViewHolder headerViewHolder, int position) {
+        final BaseInfoObject item = getItem(position);
+        if (item instanceof CategorisedInfoItem) {
+            headerViewHolder.textHeaderLine1.setText(((CategorisedInfoItem) item).getCategory().getName().toUpperCase(Locale.ENGLISH));
+        }
+    }
+
+    @Override
+    public long getHeaderId(int position) {
+        final BaseInfoObject item = getItem(position);
+        if (!(item instanceof CategorisedInfoItem)) {
+            return Integer.MAX_VALUE;
         }
 
-        // Fill the view
-        if (getItemViewType(position) == ITEM_TYPE_DATA) {
-            final InfoItem item = (InfoItem) getItem(position);
-            holder.textTitle.setText(item.getKey().toUpperCase());
-            holder.textValue.setText(item.getValue());
-        } else if (getItemViewType(position) == ITEM_TYPE_HEADER) {
-            final InfoCategory cat = (InfoCategory) getItem(position);
-            holder.textTitle.setText(cat.getName().toUpperCase());
-        } else if (getItemViewType(position) == ITEM_TYPE_IMAGE) {
-            final InfoImageItem item = (InfoImageItem) getItem(position);
-            holder.textTitle.setText(item.getKey().toUpperCase());
-            holder.imageValue.setImageResource(item.getDrawableId());
+        final String name = ((CategorisedInfoItem) item).getCategory().getName();
+        if (!headerIds.containsKey(name)) {
+            headerIds.put(name, new Long(headerIds.size()));
         }
 
-        return convertView;
+        return headerIds.get(name);
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (getItem(position) instanceof InfoCategory) {
-            return ITEM_TYPE_HEADER;
-        } else if (getItem(position) instanceof InfoImageItem) {
+        if (getItem(position) instanceof InfoImageItem) {
             return ITEM_TYPE_IMAGE;
-        } else {
+        } else if (getItem(position) instanceof InfoItem) {
             return ITEM_TYPE_DATA;
         }
+        return super.getItemViewType(position);
     }
 
-    @Override
-    public boolean isEnabled(int position) {
-        return getItemViewType(position) == ITEM_TYPE_DATA;
-    }
-
-    @Override
-    public int getViewTypeCount() {
-        return ITEM_TYPE_COUNT;
-    }
-
-    @Override
-    public int getCount() {
-        return filteredItems.size();
-    }
-
-    @Override
-    public Object getItem(int position) {
+    private BaseInfoObject getItem(int position) {
         return filteredItems.get(position);
     }
 
     @Override
     public long getItemId(int position) {
         return position;
+    }
+
+
+    @Override
+    public int getItemCount() {
+        return filteredItems.size();
     }
 
     @Override
@@ -134,10 +167,9 @@ public class InfoAdapter extends BaseAdapter implements Filterable {
                 final String needle = constraint.toString().toLowerCase();
                 // We have a filter
                 for (BaseInfoObject o : items) {
-                    if (o instanceof InfoItem && (Util.contains(needle, ((InfoItem) o).getValue()) || Util.contains(constraint.toString().toLowerCase(), ((InfoItem) o).getKey().toLowerCase()))) {
-                        // Add all headers
+                    if (o instanceof InfoItem && (Util.containsIgnoreCase(needle, ((InfoItem) o).getValue()) || Util.containsIgnoreCase(needle, ((InfoItem) o).getKey()))) {
                         filteredItems.add(o);
-                    } else if (o instanceof InfoImageItem && Util.contains(needle, ((InfoImageItem) o).getKey().toLowerCase())) {
+                    } else if (o instanceof InfoImageItem && Util.containsIgnoreCase(needle, ((InfoImageItem) o).getKey().toLowerCase())) {
                         filteredItems.add(o);
                     }
                     // No headers needed for now ..
@@ -150,18 +182,46 @@ public class InfoAdapter extends BaseAdapter implements Filterable {
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            filteredItems = InfoUtil.createCategorizedInfo((ArrayList<BaseInfoObject>) results.values);
+            filteredItems = (ArrayList<BaseInfoObject>) results.values;
             notifyDataSetChanged();
         }
     }
 
-    /**
-     * ViewHolder object for view access optimisation
-     */
-    private static class ViewHolder {
-        TextView textTitle;
-        TextView textValue;
-        ImageView imageValue;
+    public static class DataViewHolder extends RecyclerView.ViewHolder {
+        public TextView textTitle;
+        public TextView textValue;
+
+        public DataViewHolder(View itemView) {
+            super(itemView);
+            textTitle = (TextView) itemView.findViewById(R.id.text_key);
+            textValue = (TextView) itemView.findViewById(R.id.text_value);
+        }
+    }
+
+    public static class ImageViewHolder extends RecyclerView.ViewHolder {
+        public TextView textTitle;
+        public ImageView imageValue;
+
+        public ImageViewHolder(View itemView) {
+            super(itemView);
+            textTitle = (TextView) itemView.findViewById(R.id.text_key);
+            imageValue = (ImageView) itemView.findViewById(R.id.image_value);
+        }
+    }
+
+    public static class HeaderViewHolder extends RecyclerView.ViewHolder {
+        public final TextView textHeaderLine1;
+
+        public HeaderViewHolder(View itemView) {
+            super(itemView);
+            textHeaderLine1 = (TextView) itemView.findViewById(R.id.text_header);
+        }
+    }
+
+    public interface InfoAdapterListener {
+        void onItemClick(final BaseInfoObject data);
+
+        void onItemLongClick(final BaseInfoObject data);
     }
 
 }

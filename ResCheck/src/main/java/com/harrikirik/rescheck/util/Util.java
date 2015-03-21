@@ -18,6 +18,8 @@ import android.widget.Toast;
 import com.harrikirik.rescheck.R;
 import android.support.v4.view.MenuItemCompat;
 
+import java.util.Locale;
+
 
 public class Util {
 
@@ -84,6 +86,10 @@ public class Util {
 
     public static boolean contains(final String needle, final String heystack) {
         return !TextUtils.isEmpty(needle) && !TextUtils.isEmpty(heystack) && heystack.contains(needle);
+    }
+
+    public static boolean containsIgnoreCase(final String needle, final String heystack) {
+        return !TextUtils.isEmpty(needle) && !TextUtils.isEmpty(heystack) && heystack.toLowerCase(Locale.ENGLISH).contains(needle.toLowerCase(Locale.ENGLISH));
     }
 
     public static void setupActionBarSearch(final Activity activity, Menu menu, final String initialValue, final SearchView.OnQueryTextListener queryTextListener) {
