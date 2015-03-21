@@ -17,9 +17,26 @@
      limitations under the License.
 -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="Theme.Rescheck" parent="@style/Theme.AppCompat">
+    <style name="Theme.Rescheck" parent="Theme.AppCompat">
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark</item>
+        <item name="colorAccent">@color/color_accent</item>
+        <item name="windowActionModeOverlay">true</item>
+
+        <item name="colorControlHighlight">@color/color_accent</item>
+        <item name="android:colorControlNormal" tools:ignore="NewApi">?attr/colorControlNormal
+        </item>
+        <item name="android:colorControlHighlight" tools:ignore="NewApi">
+            ?attr/colorControlHighlight
+        </item>
+
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+    </style>
+
+    <style name="Theme.Rescheck2" parent="@style/Theme.AppCompat">
         <item name="actionBarItemBackground">@drawable/selectable_background_rescheck</item>
         <item name="popupMenuStyle">@style/PopupMenu.Rescheck</item>
         <item name="dropDownListViewStyle">@style/DropDownListView.Rescheck</item>

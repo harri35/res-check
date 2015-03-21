@@ -10,7 +10,7 @@ repositories {
 }
 
 android {
-    compileSdkVersion 21
+    compileSdkVersion 22
     buildToolsVersion "21.1.2"
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
@@ -76,5 +76,5 @@ build.mustRunAfter clean
 
 dependencies {
     // For Google ActionBar
-	compile "com.android.support:appcompat-v7:18.0.0"
+	compile "com.android.support:appcompat-v7:22.0.0"
 }

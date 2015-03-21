@@ -6,7 +6,7 @@
     <item
         android:id="@+id/menu_filter"
         android:title="@string/menu_filter"
-        android:icon="@drawable/action_search"
+        android:icon="@drawable/ic_search_white_24dp"
         com.harrikirik.rescheck:showAsAction="collapseActionView|always"
         com.harrikirik.rescheck:actionViewClass="android.support.v7.widget.SearchView"
         android:orderInCategory="1"/>
@@ -14,14 +14,14 @@
     <item
         android:id="@+id/menu_copy_to_clipboard"
         android:title="@string/menu_copy_to_clipboard"
-        android:icon="@drawable/content_copy"
+        android:icon="@drawable/ic_content_copy_white_24dp"
         com.harrikirik.rescheck:showAsAction="ifRoom"
         android:orderInCategory="2"/>
 
     <item
         android:id="@+id/menu_share_with"
         android:title="@string/menu_share_with"
-        android:icon="@drawable/social_share"
+        android:icon="@drawable/ic_share_white_24dp"
         com.harrikirik.rescheck:showAsAction="ifRoom"
         android:orderInCategory="3"/>
 
