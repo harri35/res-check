@@ -6,14 +6,23 @@
 
     <uses-sdk
         android:minSdkVersion="8"
-        tools:overrideLibrary="com.timehop.stickyheadersrecyclerview" />
+        tools:overrideLibrary="com.timehop.stickyheadersrecyclerview, android.support.v17.leanback" />
+
+    <uses-feature
+        android:name="android.software.leanback"
+        android:required="false" />
+
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
 
     <application
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:theme="@style/Theme.Rescheck"
-        android:allowBackup="true">
+        android:allowBackup="true"
+        android:banner="@drawable/banner1">
         <activity
             android:name="com.harrikirik.rescheck.activity.MainActivity"
             android:label="@string/app_name">
@@ -23,6 +32,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.harrikirik.rescheck.activity.TvActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Leanback">
+
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+        </intent-filter>
+
+        </activity>
+
     </application>
 
 </manifest>
