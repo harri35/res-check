@@ -29,15 +29,28 @@ import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 import java.util.ArrayList;
 
 public class SpecFragment extends Fragment implements InfoAdapter.InfoAdapterListener {
+    public static final int MODE_NORMAL = 0;
+    public static final int MODE_TV = 1;
+
+    private static final String ARG_MODE = "com.harrikirik.rescheck.ARG_MODE";
+
     private static final String STATE_FILTER = "com.harrikirik.rescheck.STATE_FILTER";
 
     private Log log = Log.getInstance(this);
     private RecyclerView recyclerView;
     private String filterText;
 
-    public static Fragment newInstance() {
+    public static Fragment newInstance(final int mode) {
         // No args for now
-        return new SpecFragment();
+        SpecFragment fragment = new SpecFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_MODE, mode);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    private int getMode() {
+        return getArguments().getInt(ARG_MODE);
     }
 
     @Override
@@ -82,19 +95,21 @@ public class SpecFragment extends Fragment implements InfoAdapter.InfoAdapterLis
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.main_menu, menu);
-        Util.setupActionBarSearch(getActivity(), menu, filterText, new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-                return false;
-            }
+        if (getMode() == MODE_NORMAL) {
+            inflater.inflate(R.menu.main_menu, menu);
+            Util.setupActionBarSearch(getActivity(), menu, filterText, new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String s) {
+                    return false;
+                }
 
-            @Override
-            public boolean onQueryTextChange(String s) {
-                setListFilter(s);
-                return true;
-            }
-        });
+                @Override
+                public boolean onQueryTextChange(String s) {
+                    setListFilter(s);
+                    return true;
+                }
+            });
+        }
 
     }
 

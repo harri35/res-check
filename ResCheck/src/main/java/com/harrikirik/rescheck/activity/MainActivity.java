@@ -1,10 +1,14 @@
 package com.harrikirik.rescheck.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.Menu;
+import android.view.MenuItem;
+
+import com.harrikirik.rescheck.BuildConfig;
 import com.harrikirik.rescheck.R;
 import com.harrikirik.rescheck.fragment.SpecFragment;
 
@@ -13,6 +17,7 @@ import com.harrikirik.rescheck.fragment.SpecFragment;
  */
 public class MainActivity extends BaseActivity {
 	private static final String TAG_SPEC_FRAGMENT = "com.harrikirik.rescheck.TAG_SPEC_FRAGMENT";
+	private static final int MENU_ITEM_ID_TV = 42;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -30,9 +35,28 @@ public class MainActivity extends BaseActivity {
 			// Already added
 			return;
 		}
-		fragment = SpecFragment.newInstance();
+		fragment = SpecFragment.newInstance(SpecFragment.MODE_NORMAL);
 		final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 		fragmentTransaction.add(R.id.layout_fragment_container, fragment, TAG_SPEC_FRAGMENT);
 		fragmentTransaction.commit();
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		if (BuildConfig.DEBUG) {
+			menu.add(Menu.NONE, MENU_ITEM_ID_TV, 0, getString(R.string.menu_open_tv));
+		}
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (BuildConfig.DEBUG) {
+			if (item.getItemId() == MENU_ITEM_ID_TV) {
+				startActivity(new Intent(this, TvActivity.class));
+				return true;
+			}
+		}
+		return super.onOptionsItemSelected(item);
 	}
 }
