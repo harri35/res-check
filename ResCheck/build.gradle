@@ -58,7 +58,7 @@ android {
         minSdkVersion project.ext.minSdkVersion
         targetSdkVersion project.ext.targetSdkVersion
         signingConfig signingConfigs.defaultSigning
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         versionName project.ext.versionName
         versionCode project.ext.versionCode
 
@@ -121,15 +121,12 @@ androidExtensions {
 }				   		  
 dependencies {
     testImplementation "junit:junit:$junitVersion"
-    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
-	testImplementation "org.mockito:mockito-core:$mockitoVersion"
-    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$mockitoKotlinVersion"
-    androidTestImplementation "com.android.support.test:runner:$testRunnerVersion"
-	androidTestImplementation "com.android.support.test.espresso:espresso-core:$espressoCoreVersion"
+    androidTestImplementation "androidx.test.ext:junit:$junitAndroidVersion"
+	androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
     implementation project(':lib_mvp')
-    implementation "com.android.support:appcompat-v7:$appcompatVersion"
+    implementation "androidx.appcompat:appcompat:$appcompatVersion"
     implementation "com.android.support:design:$appcompatVersion"
     implementation "com.jakewharton.timber:timber:$timberVersion"
     implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"

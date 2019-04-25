@@ -1,7 +1,7 @@
 package com.harrikirik.mvp
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.View
 import com.harrikirik.mvp.contracts.MvpControllerContract
 import com.harrikirik.mvp.contracts.MvpModelPresenterContract
@@ -15,7 +15,7 @@ import com.harrikirik.mvp.contracts.MvpViewPresenterContract
  * PRESENTER - Presenter implementation class
  * STATE - Optional State object class. Used in the presenter. If not needed then use 'Any'
  */
-abstract class MvpFragment<PRESENTER, STATE> : Fragment(), MvpViewContract
+abstract class MvpFragment<PRESENTER, STATE> : androidx.fragment.app.Fragment(), MvpViewContract
         where STATE : Any,
               PRESENTER : MvpControllerContract<STATE>,
               PRESENTER : MvpViewPresenterContract,

@@ -1,7 +1,7 @@
 package com.harrikirik.mvp
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.harrikirik.mvp.contracts.MvpControllerContract
 import com.harrikirik.mvp.contracts.MvpModelPresenterContract
 import com.harrikirik.mvp.contracts.MvpViewContract

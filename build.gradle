@@ -50,9 +50,10 @@ allprojects {
 
         // Library versions
 		junitVersion = '4.12'
+        junitAndroidVersion = '1.1.0'
         testRunnerVersion = '1.0.2'
-		espressoCoreVersion = '3.0.2'
-        appcompatVersion = '28.0.0'
+		espressoVersion = '3.1.0'
+        appcompatVersion = '1.0.0'
 		timberVersion = '4.7.1'
         scrollsVersion = '2.0.1-release'
         rxJavaVersion = '2.1.16'
