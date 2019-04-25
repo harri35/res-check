@@ -1,33 +1,29 @@
-# built application files
-*.apk
-*.ap_
+# ignore vim swap files
+*.swp
+# ignore test files
+TEST-*.xml
 
-# files for the dex VM
-*.dex
-
-# Java class files
-*.class
-
-# generated files
-bin/
-gen/
-
-# Local configuration file (sdk path, etc)
-local.properties
-
-# Eclipse project files
-.classpath
+# ignore eclipse .settings files
+.settings/
 .project
+.classpath
 
-out/
-.idea/
+# ignore idea files
 *.iml
-# Gradle
-# 
-.gradle/
+.idea/
 
-# Mac specific
+# ignore mac stuff Mac
 .DS_Store
 
-Rescheck/build
-build
+# ignore eclipse/idea/ant/maven/gradle output
+bin/
+local.properties
+build/
+gen/
+classes
+.idea/
+.gradle
+out/
+target
+captures/
+

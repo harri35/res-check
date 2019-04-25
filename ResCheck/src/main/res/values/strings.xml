@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">ResCheck</string>
+    <string name="text_default_input">Uncle Bob</string>
+    <string name="btn_reverse">Reverse</string>
+    <string name="hint_insert_text">Text to reverse</string>
     <string name="menu_copy_to_clipboard">Copy to Clipboard</string>
     <string name="menu_share_with">Share with ..</string>
     <string name="text_copied_to_clipboard">Copied to Clipboard</string>
@@ -75,5 +77,4 @@
     <string name="text_openg_gl_version">OpenGL version</string>
     <string name="text_opengl_es">"OpenGL ES %1$s"</string>
     <string name="menu_open_tv">Open TV view</string>
-
 </resources>

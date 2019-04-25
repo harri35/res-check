@@ -1,30 +1,72 @@
 buildscript {
+    ext.pluginVersion = '3.2.1'
+    ext.kotlinVersion = '1.3.30'
+	ext.ktlintGradleVersion = '4.1.0'								 
     repositories {
+		google()
         jcenter()
+		maven {
+            url "https://plugins.gradle.org/m2/"
+        }	   
     }
+	
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.5.0'
+        classpath "com.android.tools.build:gradle:$pluginVersion"
+		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+		classpath "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:$ktlintGradleVersion"						   
     }
 }
 
-ext {
-    versionName = "0.0.1"
-    versionCode = 1
-    isRelease = false
+subprojects {
+    apply plugin: 'org.jlleitschuh.gradle.ktlint'
+
+    ktlint {
+        android = true
+        outputToConsole = true
+        reporters = ["PLAIN", "CHECKSTYLE"]
+    }
 }
 
-def getDate() {
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+static def getDate() {
     def date = new Date()
     def formattedDate = date.format('yyyy.MM.dd')
     return formattedDate
 }
 
-allprojects {
-    buildscript {
-        project.group = "harrikirik"
-        // Yes yes, I am cheating here.
-        project.ext.isRelease = project.gradle.startParameter.taskNames.contains("buildGreenhouseRelease")
 
+allprojects {
+    ext {
+        // SDK versions
+        compileSdkVersion = 28
+        minSdkVersion = 14
+        targetSdkVersion = 28
+        versionName = "0.0.1"
+        versionCode = 1
+        isRelease = false
+
+        // Library versions
+		junitVersion = '4.12'
+        testRunnerVersion = '1.0.2'
+		espressoCoreVersion = '3.0.2'
+        appcompatVersion = '28.0.0'
+		timberVersion = '4.7.1'
+        scrollsVersion = '2.0.1-release'
+        rxJavaVersion = '2.1.16'
+        rxAndroidVersion = '2.1.1'
+        mockitoVersion = '2.19.0'
+        mockitoKotlinVersion = '2.0.0-RC1'		
+    }
+
+
+    buildscript {
+        project.group = "mobi"
+        // Yes yes, I am cheating here.
+        project.ext.isRelease = project.gradle.startParameter.taskNames.contains("buildAllRelease")
+        
         String suppliedBuildNumber = "$System.env.BUILD_NUMBER"
         // VersionName
         if (suppliedBuildNumber == null || suppliedBuildNumber.equals("") || suppliedBuildNumber.equals("null")) {
@@ -34,15 +76,19 @@ allprojects {
         }
         // This is the synonym
         project.version = project.ext.versionName
-
+        
         // VersionCode
         if (suppliedBuildNumber == null || suppliedBuildNumber.equals("") || suppliedBuildNumber.equals("null")) {
-            project.ext.versionCode = Integer.valueOf(System.getProperty("versionCode", "1"))
+            project.ext.versionCode = 1
         } else {
             project.ext.versionCode = Integer.valueOf(suppliedBuildNumber)
         }
     }
     repositories {
+		google()
         jcenter()
+		flatDir {
+            dirs 'libs'
+        }		 		   
     }
 }
