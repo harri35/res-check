@@ -1,13 +1,8 @@
 package com.harrikirik.rescheck
 
 import android.app.Application
-import android.app.ActivityManager
-import android.os.Process
-import android.os.StrictMode
 import timber.log.Timber
 import timber.log.Timber.DebugTree
-
-
 
 class RescheckApplication : Application() {
 
