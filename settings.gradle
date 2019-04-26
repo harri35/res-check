@@ -1,1 +1,1 @@
-include ':lib_mvp', ':ResCheck'
+include ':lib_mvp', ':ResCheck', ':mod_deviceinfo'

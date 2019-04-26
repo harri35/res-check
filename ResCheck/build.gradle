@@ -121,17 +121,18 @@ buildAllRelease.description = "Build the release version"
 
 build.mustRunAfter clean
 
-androidExtensions {
-    experimental = true
-}				   		  
 dependencies {
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "androidx.test.ext:junit:$junitAndroidVersion"
 	androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
     implementation project(':lib_mvp')
+    implementation project(':mod_deviceinfo')
+
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
     implementation "androidx.appcompat:appcompat:$appcompatVersion"
+    implementation "androidx.core:core-ktx:$coreKTXVersion"
     implementation "com.android.support:design:$appcompatVersion"
     implementation "com.jakewharton.timber:timber:$timberVersion"
     implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"

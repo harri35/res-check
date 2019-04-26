@@ -1,4 +1,6 @@
-buildscript {
+buildscript { 
+    ext.kotlin_version = '1.3.30'
+
     ext.pluginVersion = '3.2.1'
     ext.kotlinVersion = '1.3.30'
 	ext.ktlintGradleVersion = '4.1.0'								 
@@ -14,7 +16,7 @@ buildscript {
         classpath "com.android.tools.build:gradle:$pluginVersion"
 		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
 		classpath "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:$ktlintGradleVersion"						   
-    }
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version" }
 }
 
 subprojects {
@@ -53,13 +55,14 @@ allprojects {
         junitAndroidVersion = '1.1.0'
         testRunnerVersion = '1.0.2'
 		espressoVersion = '3.1.0'
-        appcompatVersion = '1.0.0'
+        appcompatVersion = '1.0.2'
 		timberVersion = '4.7.1'
         scrollsVersion = '2.0.1-release'
         rxJavaVersion = '2.1.16'
         rxAndroidVersion = '2.1.1'
         mockitoVersion = '2.19.0'
-        mockitoKotlinVersion = '2.0.0-RC1'		
+        mockitoKotlinVersion = '2.0.0-RC1'
+        coreKTXVersion = '1.0.1'
     }
 
 
