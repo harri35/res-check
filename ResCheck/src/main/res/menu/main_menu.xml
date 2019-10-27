@@ -8,7 +8,7 @@
         android:title="@string/menu_filter"
         android:icon="@drawable/ic_search_white_24dp"
         com.harrikirik.rescheck:showAsAction="collapseActionView|always"
-        com.harrikirik.rescheck:actionViewClass="android.support.v7.widget.SearchView"
+        com.harrikirik.rescheck:actionViewClass="androidx.appcompat.widget.SearchView"
         android:orderInCategory="1"/>
 
     <item

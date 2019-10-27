@@ -2,12 +2,14 @@ package com.harrikirik.rescheck.dto;
 
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+
 /**
  * Bae InfoItem class
  * Harri Kirik, harri35@gmail.com
  */
 public class InfoItem extends BaseInfoObject implements CategorisedInfoItem {
-    public static final int VERSION_CODE_UNKNOWN = -1;
+    private static final int VERSION_CODE_UNKNOWN = -1;
 
     private static final long serialVersionUID = 6766729117231253812L;
 
@@ -42,22 +44,27 @@ public class InfoItem extends BaseInfoObject implements CategorisedInfoItem {
         this.category = category;
     }
 
+    @SuppressWarnings("unused")
     public String getDescription() {
         return description;
     }
 
+    @SuppressWarnings("unused")
     public void setDescription(String description) {
         this.description = description;
     }
 
+    @SuppressWarnings("unused")
     public void setVersionCode(int versionCode) {
         this.versionCode = versionCode;
     }
 
+    @SuppressWarnings("unused")
     public int getVersionCode() {
         return versionCode;
     }
 
+    @SuppressWarnings("unused")
     public boolean hasDetails() {
         return versionCode > 0 && !TextUtils.isEmpty(description);
     }
@@ -67,6 +74,7 @@ public class InfoItem extends BaseInfoObject implements CategorisedInfoItem {
         return getKey() + ": " + getValue();
     }
 
+    @NonNull
     @Override
     public String toString() {
         return super.toString() + " with key: " + getKey() + ", value: " + getValue();

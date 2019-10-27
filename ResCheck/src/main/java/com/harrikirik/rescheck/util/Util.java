@@ -1,39 +1,31 @@
 package com.harrikirik.rescheck.util;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.SearchManager;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
-import android.support.v7.widget.SearchView;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Toast;
+
 import com.harrikirik.rescheck.R;
-import android.support.v4.view.MenuItemCompat;
 
 import java.util.Locale;
+
+import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuItemCompat;
 
 
 public class Util {
 
-    private static Log log = Log.getInstance(Util.class);
-
     public static void copyToClipboard(final Context context, final String content, final boolean showToast) {
-        boolean success = false;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            // Newer versions
-            success = copyToClipboardWithContentClipboardManager(context, content);
-        } else {
-            // Earlier versions
-            success = copyToClipboardWithTextClipboardManager(context, content);
-        }
+        boolean success;
+        // Newer versions
+        success = copyToClipboardWithContentClipboardManager(context, content);
 
         if (showToast && success) {
             Toast.makeText(context, context.getString(R.string.text_copied_to_clipboard), Toast.LENGTH_SHORT).show();
@@ -42,26 +34,13 @@ public class Util {
         }
     }
 
-    @SuppressWarnings("Depricated")
-    private static boolean copyToClipboardWithTextClipboardManager(final Context context, final String content) {
-        try {
-            final android.text.ClipboardManager clipboard = (android.text.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-            clipboard.setText(content);
-            return true;
-        } catch (Exception e) {
-            log.e("copyToClipboardWithTextClipboardManager", e);
-        }
-        return false;
-    }
-
-    /**
-     * PS: API level 11 and over
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private static boolean copyToClipboardWithContentClipboardManager(final Context context, final String content) {
         Log.getInstance(Util.class).d("copyToClipboardWithContentClipboardManager - content: " + content);
         try {
             final android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+            if (clipboard == null) {
+                return false;
+            }
             final ClipData clip = ClipData.newPlainText(context.getText(R.string.app_name), content);
             clipboard.setPrimaryClip(clip);
             return true;
@@ -84,6 +63,7 @@ public class Util {
         }
     }
 
+    @SuppressWarnings("unused")
     public static boolean contains(final String needle, final String heystack) {
         return !TextUtils.isEmpty(needle) && !TextUtils.isEmpty(heystack) && heystack.contains(needle);
     }
@@ -94,7 +74,7 @@ public class Util {
 
     public static void setupActionBarSearch(final Activity activity, Menu menu, final String initialValue, final SearchView.OnQueryTextListener queryTextListener) {
         final SearchManager searchManager = (SearchManager) activity.getSystemService(Context.SEARCH_SERVICE);
-        final MenuItem menuItem =  menu.findItem(R.id.menu_filter);
+        final MenuItem menuItem = menu.findItem(R.id.menu_filter);
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menuItem);
         searchView.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
         searchView.setSubmitButtonEnabled(false);

@@ -19,11 +19,10 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="Theme.Rescheck" parent="Theme.AppCompat">
+    <style name="Theme.Rescheck" parent="Theme.AppCompat.NoActionBar">
         <item name="colorPrimary">@color/color_primary</item>
         <item name="colorPrimaryDark">@color/color_primary_dark</item>
         <item name="colorAccent">@color/color_accent</item>
-        <item name="windowActionModeOverlay">true</item>
 
         <item name="colorControlHighlight">@color/color_accent</item>
         <item name="android:colorControlNormal" tools:ignore="NewApi">?attr/colorControlNormal
@@ -32,13 +31,13 @@
             ?attr/colorControlHighlight
         </item>
 
-        <item name="android:windowNoTitle">true</item>
-        <item name="windowActionBar">false</item>
         <item name="android:windowBackground">@color/background_1</item>
 
         <!-- Overflow icon -->
         <item name="actionOverflowButtonStyle">@style/AppTheme.OverFlowMenuStyle</item>
+        <item name="windowActionBar">false</item>
     </style>
+
 
     <!-- Custom overflow -->
     <style name="AppTheme.OverFlowMenuStyle" parent="@style/Widget.AppCompat.Light.ActionButton.Overflow">

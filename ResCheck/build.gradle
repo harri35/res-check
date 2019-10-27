@@ -1,21 +1,23 @@
 buildscript {
     repositories {
+        google()
         jcenter()
     }
 }
 apply plugin: 'com.android.application'
+apply plugin: 'checkstyle'
 
 repositories {
     mavenCentral()
 }
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "23.0.2"
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
+    compileSdkVersion project.ext.versionCompileSdk
+    buildToolsVersion project.ext.versionBuildTools
 	signingConfigs {
         defaultSigning {
 			if (project.hasProperty('storeFilePath')) {
@@ -54,8 +56,8 @@ android {
 
 	defaultConfig {
         applicationId "com.harrikirik.rescheck"
-        minSdkVersion 8
-        targetSdkVersion 22
+        minSdkVersion project.ext.versionMinSdkVersion
+        targetSdkVersion project.ext.versionTargetSdk
         versionName project.ext.versionName
         versionCode project.ext.versionCode
         signingConfig signingConfigs.defaultSigning
@@ -74,25 +76,44 @@ android {
     lintOptions {
         checkReleaseBuilds true
         abortOnError true
+        // Level depends on the type of the job
+        /// Fail the build if buildRelease target is called and we have missing translations!
+        project.ext.isRelease ? error("MissingTranslation") : warning("MissingTranslation")
+        /// Hardcoded text should not exist or should have case by case exceptions
+        error "HardcodedText"
+        // Warning level things
+        warning "ImpliedQuantity"
+        warning "InvalidPackage"
+        warning "GradleCompatible"
     }
 }
 
 def GROUP_BUILD_TASKS = 'Build'
-task buildGreenhouseDebug(dependsOn: ['clean', 'build'])
-buildGreenhouseDebug.group = GROUP_BUILD_TASKS
-buildGreenhouseDebug.description = "Build and publish the debug version with GreenhouseCI"
+task buildAllDebug(dependsOn: ['clean', 'build'])
+buildAllDebug.group = GROUP_BUILD_TASKS
+buildAllDebug.description = "Build and publish the debug version with GreenhouseCI"
 
-task buildGreenhouseRelease(dependsOn: ['buildGreenhouseDebug'])
-buildGreenhouseRelease.group = GROUP_BUILD_TASKS
-buildGreenhouseRelease.description = "Build and publish the release version with GreenhouseCI"
+task buildAllRelease(dependsOn: ['buildAllDebug'])
+buildAllRelease.group = GROUP_BUILD_TASKS
+buildAllRelease.description = "Build and publish the release version with GreenhouseCI"
 
 build.mustRunAfter clean
 
+check.dependsOn 'checkstyle'
+
+task checkstyle(type: Checkstyle) {
+    configFile file("../config/checkstyle/checkstyle.xml")
+    source 'src'
+    include '**/*.java'
+    exclude '**/gen/**'
+
+    classpath = files()
+}
 
 dependencies {
     // For Google ActionBar
-    compile 'com.android.support:appcompat-v7:22.0.0'
-    compile 'com.android.support:recyclerview-v7:22.0.0'
-    compile 'com.timehop.stickyheadersrecyclerview:library:0.3.6@aar'
-    compile 'com.android.support:leanback-v17:22.0.0'
+    implementation "androidx.appcompat:appcompat:$rootProject.ext.versionAppCompat"
+    implementation "androidx.recyclerview:recyclerview:$rootProject.ext.versionRecyclerView"
+    implementation "com.timehop.stickyheadersrecyclerview:library:$rootProject.ext.versionStickyHeadersRecyclerView"
+    implementation "androidx.leanback:leanback:$rootProject.ext.versionLeanback"
 }

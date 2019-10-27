@@ -6,6 +6,7 @@ import com.harrikirik.rescheck.BuildConfig;
  * A little more convenient logging class
  * Harri Kirik, harri35@gmail.com
  */
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class Log {
     private String tag;
 
@@ -35,9 +36,13 @@ public class Log {
             return;
         }
         if (e == null) {
+            //Checkstyle off: androidUtilLogs
             android.util.Log.d(tag, msg);
+            //Checkstyle on: androidUtilLogs
         } else {
+            //Checkstyle off: androidUtilLogs
             android.util.Log.d(tag, msg, e);
+            //Checkstyle on: androidUtilLogs
         }
     }
 
@@ -47,9 +52,13 @@ public class Log {
 
     public void e(final String msg, final Throwable e) {
         if (e == null) {
+            //Checkstyle off: androidUtilLogs
             android.util.Log.e(tag, msg);
+            //Checkstyle on: androidUtilLogs
         } else {
+            //Checkstyle off: androidUtilLogs
             android.util.Log.e(tag, msg, e);
+            //Checkstyle on: androidUtilLogs
         }
     }
 

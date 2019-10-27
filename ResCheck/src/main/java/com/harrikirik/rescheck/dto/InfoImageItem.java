@@ -1,5 +1,7 @@
 package com.harrikirik.rescheck.dto;
 
+import androidx.annotation.NonNull;
+
 /**
  * Info item containing an image
  * Harri Kirik, harri35@gmail.com
@@ -22,6 +24,7 @@ public class InfoImageItem extends InfoItem {
         return null;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return super.toString() + " with key: " + getKey() + ", drawableId: " + getDrawableId();

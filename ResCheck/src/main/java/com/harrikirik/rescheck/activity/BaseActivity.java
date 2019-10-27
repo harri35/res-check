@@ -1,19 +1,22 @@
 package com.harrikirik.rescheck.activity;
 
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
+import android.annotation.SuppressLint;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.harrikirik.rescheck.R;
 
 /**
  * Created by Harri Kirik (harri35@gmail.com)
  */
-public class BaseActivity extends ActionBarActivity {
+@SuppressLint("Registered")
+public class BaseActivity extends AppCompatActivity {
     protected Toolbar toolbar;
 
     public Toolbar getToolbar() {
         if (toolbar == null) {
-            toolbar = (Toolbar) findViewById(R.id.toolbar);
+            toolbar = findViewById(R.id.toolbar);
         }
         return toolbar;
     }
@@ -22,7 +25,7 @@ public class BaseActivity extends ActionBarActivity {
         setupToolbar(title, false);
     }
 
-    protected void setupToolbar(final String title, final boolean enableUpNavigation) {
+    protected void setupToolbar(final String title, @SuppressWarnings("SameParameterValue") final boolean enableUpNavigation) {
         final Toolbar toolbar = getToolbar();
         if (toolbar == null) {
             return;

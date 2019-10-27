@@ -1,7 +1,6 @@
 package com.harrikirik.rescheck.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,13 +15,15 @@ import com.harrikirik.rescheck.dto.BaseInfoObject;
 import com.harrikirik.rescheck.dto.CategorisedInfoItem;
 import com.harrikirik.rescheck.dto.InfoImageItem;
 import com.harrikirik.rescheck.dto.InfoItem;
-import com.harrikirik.rescheck.util.Log;
 import com.harrikirik.rescheck.util.Util;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Adapter for info items.
@@ -38,7 +39,6 @@ public class InfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     private ArrayList<BaseInfoObject> filteredItems;
     private InfoFilter filter;
     private HashMap<String, Long> headerIds = new HashMap<>();
-    private Log log = Log.getInstance(this);
 
     public InfoAdapter(final Context context, final ArrayList<BaseInfoObject> items, final InfoAdapterListener listener) {
         this.context = context;
@@ -48,8 +48,9 @@ public class InfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         this.listener = listener;
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (viewType) {
             case ITEM_TYPE_DATA: {
                 return new DataViewHolder(LayoutInflater.from(context).inflate(R.layout.info_item, parent, false));
@@ -58,7 +59,7 @@ public class InfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                 return new ImageViewHolder(LayoutInflater.from(context).inflate(R.layout.info_image_item, parent, false));
             }
         }
-        return null;
+        throw new IllegalArgumentException("Unsupported view type!");
     }
 
     @Override
@@ -68,7 +69,7 @@ public class InfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         final BaseInfoObject item = getItem(position);
         if (holder instanceof DataViewHolder) {
             ((DataViewHolder) holder).textTitle.setText(((InfoItem) item).getKey().toUpperCase(Locale.ENGLISH));
@@ -77,24 +78,18 @@ public class InfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             ((ImageViewHolder) holder).textTitle.setText(((InfoImageItem) item).getKey().toUpperCase(Locale.ENGLISH));
             ((ImageViewHolder) holder).imageValue.setImageResource(((InfoImageItem) item).getDrawableId());
         }
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener != null) {
-                    listener.onItemClick(item);
-                }
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onItemClick(item);
             }
         });
 
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if (listener != null) {
-                    listener.onItemLongClick(item);
-                    return true;
-                }
-                return false;
+        holder.itemView.setOnLongClickListener(v -> {
+            if (listener != null) {
+                listener.onItemLongClick(item);
+                return true;
             }
+            return false;
         });
     }
 
@@ -115,9 +110,10 @@ public class InfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
         final String name = ((CategorisedInfoItem) item).getCategory().getName();
         if (!headerIds.containsKey(name)) {
-            headerIds.put(name, Long.valueOf(headerIds.size()));
+            headerIds.put(name, (long) headerIds.size());
         }
 
+        //noinspection ConstantConditions
         return headerIds.get(name);
     }
 
@@ -158,7 +154,7 @@ public class InfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
         @Override
         protected FilterResults performFiltering(final CharSequence constraint) {
-            final ArrayList<BaseInfoObject> filteredItems = new ArrayList<BaseInfoObject>();
+            final ArrayList<BaseInfoObject> filteredItems = new ArrayList<>();
             final FilterResults results = new FilterResults();
             if (TextUtils.isEmpty(constraint)) {
                 // No filter
@@ -182,39 +178,40 @@ public class InfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
+            //noinspection unchecked
             filteredItems = (ArrayList<BaseInfoObject>) results.values;
             notifyDataSetChanged();
         }
     }
 
     public static class DataViewHolder extends RecyclerView.ViewHolder {
-        public TextView textTitle;
-        public TextView textValue;
+        TextView textTitle;
+        TextView textValue;
 
-        public DataViewHolder(View itemView) {
+        DataViewHolder(View itemView) {
             super(itemView);
-            textTitle = (TextView) itemView.findViewById(R.id.text_key);
-            textValue = (TextView) itemView.findViewById(R.id.text_value);
+            textTitle = itemView.findViewById(R.id.text_key);
+            textValue = itemView.findViewById(R.id.text_value);
         }
     }
 
     public static class ImageViewHolder extends RecyclerView.ViewHolder {
-        public TextView textTitle;
-        public ImageView imageValue;
+        TextView textTitle;
+        ImageView imageValue;
 
-        public ImageViewHolder(View itemView) {
+        ImageViewHolder(View itemView) {
             super(itemView);
-            textTitle = (TextView) itemView.findViewById(R.id.text_key);
-            imageValue = (ImageView) itemView.findViewById(R.id.image_value);
+            textTitle = itemView.findViewById(R.id.text_key);
+            imageValue = itemView.findViewById(R.id.image_value);
         }
     }
 
-    public static class HeaderViewHolder extends RecyclerView.ViewHolder {
-        public final TextView textHeaderLine1;
+    static class HeaderViewHolder extends RecyclerView.ViewHolder {
+        final TextView textHeaderLine1;
 
-        public HeaderViewHolder(View itemView) {
+        HeaderViewHolder(View itemView) {
             super(itemView);
-            textHeaderLine1 = (TextView) itemView.findViewById(R.id.text_header);
+            textHeaderLine1 = itemView.findViewById(R.id.text_header);
         }
     }
 

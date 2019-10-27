@@ -2,11 +2,13 @@ package com.harrikirik.rescheck.fragment;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -50,6 +52,7 @@ public class SpecFragment extends Fragment implements InfoAdapter.InfoAdapterLis
     }
 
     private int getMode() {
+        assert getArguments() != null;
         return getArguments().getInt(ARG_MODE);
     }
 
@@ -57,15 +60,15 @@ public class SpecFragment extends Fragment implements InfoAdapter.InfoAdapterLis
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         final View view = inflater.inflate(R.layout.spec_fragment_layout, container, false);
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_spec_info);
+        recyclerView = view.findViewById(R.id.recycler_spec_info);
         recyclerView.setHasFixedSize(true);
-        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
+        recyclerView.addItemDecoration(new DividerItemDecoration(container.getContext(), DividerItemDecoration.VERTICAL_LIST));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        layoutManager.setOrientation(LinearLayout.VERTICAL);
+        layoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
 
-        final TextView textEmpty = (TextView) view.findViewById(R.id.text_spec_empty);
+        final TextView textEmpty = view.findViewById(R.id.text_spec_empty);
         textEmpty.setVisibility(View.GONE);
         if (savedInstanceState != null) {
             filterText = savedInstanceState.getString(STATE_FILTER);
@@ -75,7 +78,7 @@ public class SpecFragment extends Fragment implements InfoAdapter.InfoAdapterLis
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(STATE_FILTER, filterText);
     }
@@ -85,7 +88,7 @@ public class SpecFragment extends Fragment implements InfoAdapter.InfoAdapterLis
             return;
         }
         final ArrayList<BaseInfoObject> items = InfoUtil.getFullInfo(getActivity());
-        final InfoAdapter adapter = new InfoAdapter(getActivity().getApplicationContext(), items, this);
+        final InfoAdapter adapter = new InfoAdapter(recyclerView.getContext().getApplicationContext(), items, this);
         recyclerView.setAdapter(adapter);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             recyclerView.addItemDecoration(new StickyRecyclerHeadersDecoration(adapter));
@@ -97,6 +100,7 @@ public class SpecFragment extends Fragment implements InfoAdapter.InfoAdapterLis
         super.onCreateOptionsMenu(menu, inflater);
         if (getMode() == MODE_NORMAL) {
             inflater.inflate(R.menu.main_menu, menu);
+            //noinspection ConstantConditions
             Util.setupActionBarSearch(getActivity(), menu, filterText, new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextSubmit(String s) {
@@ -126,10 +130,11 @@ public class SpecFragment extends Fragment implements InfoAdapter.InfoAdapterLis
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_copy_to_clipboard:
-                Util.copyToClipboard(getActivity(), InfoUtil.getFullInfoString(getActivity()).toString(), true);
+                Util.copyToClipboard(getActivity(), InfoUtil.getFullInfoString(getActivity()), true);
                 return true;
             case R.id.menu_share_with:
-                Util.shareText(getActivity(), getActivity().getString(R.string.title_share_with), InfoUtil.getFullInfoString(getActivity()).toString());
+                //noinspection ConstantConditions
+                Util.shareText(getActivity(), getActivity().getString(R.string.title_share_with), InfoUtil.getFullInfoString(getActivity()));
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -142,6 +147,9 @@ public class SpecFragment extends Fragment implements InfoAdapter.InfoAdapterLis
 
     @Override
     public void onItemLongClick(BaseInfoObject data) {
+        if (getActivity() == null) {
+            return;
+        }
         Util.shareText(getActivity(), getActivity().getString(R.string.title_share_with), data.toPrintableString());
     }
 }

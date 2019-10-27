@@ -2,6 +2,8 @@ package com.harrikirik.rescheck.dto;
 
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+
 /**
  * Category of an InfoItem
  * Harri Kirik, harri35@gmail.com
@@ -33,6 +35,7 @@ public class InfoCategory extends BaseInfoObject {
         return super.equals(o);
     }
 
+    @NonNull
     @Override
     public String toString() {
         return super.toString() + " with name: " + getName();

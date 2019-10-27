@@ -1,5 +1,6 @@
 package com.harrikirik.rescheck.util;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -11,8 +12,13 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.View;
+
 import com.harrikirik.rescheck.R;
-import com.harrikirik.rescheck.dto.*;
+import com.harrikirik.rescheck.dto.BaseInfoObject;
+import com.harrikirik.rescheck.dto.CategorisedInfoItem;
+import com.harrikirik.rescheck.dto.InfoCategory;
+import com.harrikirik.rescheck.dto.InfoImageItem;
+import com.harrikirik.rescheck.dto.InfoItem;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,7 +35,7 @@ public class InfoUtil {
     private static Log log = Log.getInstance(InfoUtil.class);
 
     public static ArrayList<BaseInfoObject> getFullInfo(final Activity activity) {
-        final ArrayList<BaseInfoObject> items = new ArrayList<BaseInfoObject>();
+        final ArrayList<BaseInfoObject> items = new ArrayList<>();
 
         try {
             items.addAll(getGeneralDeviceInfo(activity));
@@ -70,19 +76,17 @@ public class InfoUtil {
         return items;
     }
 
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
+    @SuppressLint("HardwareIds")
     private static ArrayList<BaseInfoObject> getGeneralDeviceInfo(final Activity activity) {
-        final ArrayList<BaseInfoObject> items = new ArrayList<BaseInfoObject>();
+        final ArrayList<BaseInfoObject> items = new ArrayList<>();
         final InfoCategory cat = new InfoCategory(activity.getString(R.string.text_device_general_info));
         addItem(items, activity.getString(R.string.text_model), Build.MODEL, cat);
-        addItem(items, activity.getString(R.string.text_build_version), getBuildVersionName(activity), cat);
+        addItem(items, activity.getString(R.string.text_build_version), getBuildVersionName(), cat);
         addItem(items, activity.getString(R.string.text_api_level), getAndroidVersionName(activity), cat);
         addItem(items, activity.getString(R.string.text_manufacturer), Build.MANUFACTURER, cat);
         addItem(items, activity.getString(R.string.text_device), Build.DEVICE, cat);
         addItem(items, activity.getString(R.string.text_product), Build.PRODUCT, cat);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-            addItem(items, activity.getString(R.string.text_serial), Build.SERIAL, cat);
-        }
+        addItem(items, activity.getString(R.string.text_serial), Build.SERIAL, cat);
         addItem(items, activity.getString(R.string.text_build_tags), Build.TAGS, cat);
 
         return items;
@@ -90,7 +94,7 @@ public class InfoUtil {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private static ArrayList<BaseInfoObject> getABIInfo(final Activity activity) {
-        final ArrayList<BaseInfoObject> items = new ArrayList<BaseInfoObject>();
+        final ArrayList<BaseInfoObject> items = new ArrayList<>();
         final InfoCategory cat = new InfoCategory(activity.getString(R.string.text_application_binary_interface));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             addItem(items, activity.getString(R.string.text_supported_abis), Arrays.toString(Build.SUPPORTED_ABIS), cat);
@@ -102,15 +106,17 @@ public class InfoUtil {
     }
 
     private static ArrayList<BaseInfoObject> getGraphicsInfo(final Activity activity) {
-        final ArrayList<BaseInfoObject> items = new ArrayList<BaseInfoObject>();
+        final ArrayList<BaseInfoObject> items = new ArrayList<>();
         final InfoCategory cat = new InfoCategory(activity.getString(R.string.text_graphics));
         final ActivityManager am = (ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE);
-        ConfigurationInfo info = am.getDeviceConfigurationInfo();
-        addItem(items, activity.getString(R.string.text_openg_gl_version), activity.getString(R.string.text_opengl_es, info.getGlEsVersion()), cat);
+        if (am != null) {
+            ConfigurationInfo info = am.getDeviceConfigurationInfo();
+            addItem(items, activity.getString(R.string.text_openg_gl_version), activity.getString(R.string.text_opengl_es, info.getGlEsVersion()), cat);
+        }
         return items;
     }
 
-    private static String getBuildVersionName(final Context context) {
+    private static String getBuildVersionName() {
         return TextUtils.equals(Build.VERSION.CODENAME, "REL") ? Build.VERSION.RELEASE : Build.VERSION.CODENAME;
     }
 
@@ -182,7 +188,7 @@ public class InfoUtil {
                 versionName = "LOLLIPOP";
                 break;
         }
-        return !TextUtils.isEmpty(versionName) ? context.getString(R.string.text_api_level_x_y, Integer.toString(versionInt), versionName.toString()) : String.valueOf(versionInt);
+        return !TextUtils.isEmpty(versionName) ? context.getString(R.string.text_api_level_x_y, Integer.toString(versionInt), versionName) : String.valueOf(versionInt);
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -191,7 +197,7 @@ public class InfoUtil {
         final DisplayMetrics metrics = new DisplayMetrics();
         display.getMetrics(metrics);
 
-        final ArrayList<BaseInfoObject> items = new ArrayList<BaseInfoObject>();
+        final ArrayList<BaseInfoObject> items = new ArrayList<>();
 
         final InfoCategory cat = new InfoCategory(activity.getString(R.string.text_device_display));
         addItem(items, activity.getString(R.string.text_display_id), String.valueOf(display.getDisplayId()), cat);
@@ -221,18 +227,18 @@ public class InfoUtil {
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    public static ArrayList<BaseInfoObject> getScreenInfo(final Activity activity) {
+    private static ArrayList<BaseInfoObject> getScreenInfo(final Activity activity) {
         final Configuration conf = activity.getResources().getConfiguration();
 
-        final ArrayList<BaseInfoObject> items = new ArrayList<BaseInfoObject>();
+        final ArrayList<BaseInfoObject> items = new ArrayList<>();
         final Display display = activity.getWindowManager().getDefaultDisplay();
         final DisplayMetrics metrics = new DisplayMetrics();
         display.getMetrics(metrics);
 
         final InfoCategory cat = new InfoCategory(activity.getString(R.string.text_device_screen));
-        addItem(items, activity.getString(R.string.text_screen_with), activity.getString(R.string.text_x_dpi, Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2 ? String.valueOf(conf.screenWidthDp) : activity.getString(R.string.text_unknown)), cat);
-        addItem(items, activity.getString(R.string.text_screen_height), activity.getString(R.string.text_x_dpi, Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2 ? String.valueOf(conf.screenHeightDp) : activity.getString(R.string.text_unknown)), cat);
-        addItem(items, activity.getString(R.string.text_screen_smallest_width_dp), Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2 ?  activity.getString(R.string.text_x_dpi, String.valueOf(conf.smallestScreenWidthDp)) : activity.getString(R.string.text_unknown), cat);
+        addItem(items, activity.getString(R.string.text_screen_with), activity.getString(R.string.text_x_dpi, String.valueOf(conf.screenWidthDp)), cat);
+        addItem(items, activity.getString(R.string.text_screen_height), activity.getString(R.string.text_x_dpi, String.valueOf(conf.screenHeightDp)), cat);
+        addItem(items, activity.getString(R.string.text_screen_smallest_width_dp), activity.getString(R.string.text_x_dpi, String.valueOf(conf.smallestScreenWidthDp)), cat);
 
         items.add(new InfoImageItem(activity.getString(R.string.text_screen_density), R.drawable.icon_dpi, cat));
         addItem(items, activity.getString(R.string.text_screen_density_value_dpi), activity.getString(R.string.text_x_dpi, String.valueOf(metrics.densityDpi)), cat);
@@ -292,8 +298,8 @@ public class InfoUtil {
         return items;
     }
 
-    public static ArrayList<BaseInfoObject> getMemoryInfo(final Activity activity) {
-        final ArrayList<BaseInfoObject> items = new ArrayList<BaseInfoObject>();
+    private static ArrayList<BaseInfoObject> getMemoryInfo(final Activity activity) {
+        final ArrayList<BaseInfoObject> items = new ArrayList<>();
         final InfoCategory cat = new InfoCategory(activity.getString(R.string.text_device_memory));
         addItem(items, activity.getString(R.string.text_device_memory_class_mb), activity.getString(R.string.text_x_mb, String.valueOf(getMemoryClass(activity) / 1024d / 1024d)), cat);
         addItem(items, activity.getString(R.string.text_device_max_memory_mb), activity.getString(R.string.text_x_mb, String.valueOf((getAllowedMemory() / 1024d / 1024d))), cat);
@@ -301,8 +307,8 @@ public class InfoUtil {
         return items;
     }
 
-    public static ArrayList<BaseInfoObject> createCategorizedInfo(final ArrayList<BaseInfoObject> items) {
-        final ArrayList<BaseInfoObject> catItems = new ArrayList<BaseInfoObject>();
+    private static ArrayList<BaseInfoObject> createCategorizedInfo(final ArrayList<BaseInfoObject> items) {
+        final ArrayList<BaseInfoObject> catItems = new ArrayList<>();
         if (items == null || items.size() == 0) {
             return catItems;
         }
@@ -349,12 +355,12 @@ public class InfoUtil {
      * PS: This is usually the same as {@link #getMemoryClass(android.content.Context)} but may be also bigger is some cases, for example for rooted devices with custom builds or when android:largeHeap="true" is set in the Manifest<br/>
      * PPS: Going over this will crash the app.
      */
-    public static long getAllowedMemory() {
-        final long defaultValue = 16l * 1024l * 1024l;
+    private static long getAllowedMemory() {
+        final long defaultValue = 16L * 1024L * 1024L;
 
         final Runtime runtime = Runtime.getRuntime();
         if (runtime != null) {
-            final Long value = runtime.maxMemory();
+            final long value = runtime.maxMemory();
             if (value == Long.MAX_VALUE) {
                 // No value available
                 return defaultValue;
@@ -372,20 +378,18 @@ public class InfoUtil {
      * PS: Should be equal or smaller than {@link #getAllowedMemory()}<br/>
      * PPS: Going over this may or may not crash the app depending on the actual #getAllowedMemory() value. But it is strongly advised to stay under this limit.
      */
-    public static long getMemoryClass(final Context context) {
-        final long defaultValue = 16l * 1024l * 1024l;
+    private static long getMemoryClass(final Context context) {
+        final long defaultValue = 16L * 1024L * 1024L;
 
         final ActivityManager activityManager = (ActivityManager) context.getSystemService(Activity.ACTIVITY_SERVICE);
         if (activityManager != null) {
-            long memoryClass = activityManager.getMemoryClass() * 1024l * 1024l;
-            return memoryClass;
+            return activityManager.getMemoryClass() * 1024L * 1024L;
         }
-
         return defaultValue;
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    public static int isLowRamDevice(final Context context) {
+    private static int isLowRamDevice(final Context context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             return LOW_RAM_DEVICE_UNKNOWN;
         }

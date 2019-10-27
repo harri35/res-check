@@ -1,9 +1,22 @@
+apply plugin: 'com.github.ben-manes.versions'
+/**
+ * Major version component, incremented when the VERSION_FEATURE reaches to 10.
+ */
+final String VERSION_MAJOR = "1"
+/**
+ * Feature version component YY, incremented when a feature is added. If it reaches 99 then it is set back to 00 and the VERSION_MAJOR is incremented by one.
+ */
+final String VERSION_FEATURE = "1"
 buildscript {
+    ext.gradlePluginVersion = '3.5.1'
+    ext.gradleVersionsVersion = '0.27.0' // 23.10.2019
     repositories {
+        google()
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.5.0'
+        classpath "com.android.tools.build:gradle:$gradlePluginVersion"
+        classpath "com.github.ben-manes:gradle-versions-plugin:$gradleVersionsVersion"
     }
 }
 
@@ -13,36 +26,57 @@ ext {
     isRelease = false
 }
 
-def getDate() {
-    def date = new Date()
-    def formattedDate = date.format('yyyy.MM.dd')
-    return formattedDate
-}
-
 allprojects {
+    ext {
+        // Tool versions
+        versionCompileSdk = 29 // 27.09.2019
+        versionTargetSdk = 29 // 27.09.2019
+        versionMinSdkVersion = 14 // 27.09.2019
+        versionBuildTools = '28.0.3' // 27.09.2019
+
+        // Libraries
+        versionAppCompat = '1.1.0' // 27.10.2019
+        versionAnnotation = '1.1.0' // 27.10.2019
+        versionRecyclerView = '1.0.0' // 27.10.2019
+        versionLeanback = '1.0.0' // 27.10.2019
+        versionStickyHeadersRecyclerView = '0.4.3@aar' // 27.10.2019
+    }
     buildscript {
         project.group = "harrikirik"
         // Yes yes, I am cheating here.
-        project.ext.isRelease = project.gradle.startParameter.taskNames.contains("buildGreenhouseRelease")
+        project.ext.isRelease = project.gradle.startParameter.taskNames.contains("buildAllRelease")
 
         String suppliedBuildNumber = "$System.env.BUILD_NUMBER"
-        // VersionName
-        if (suppliedBuildNumber == null || suppliedBuildNumber.equals("") || suppliedBuildNumber.equals("null")) {
-            project.ext.versionName = getDate() + (isRelease ? ".r" : ".d") + "1"
-        } else {
-            project.ext.versionName = getDate() + (isRelease ? ".r" : ".d") + suppliedBuildNumber
-        }
-        // This is the synonym
-        project.version = project.ext.versionName
-
         // VersionCode
         if (suppliedBuildNumber == null || suppliedBuildNumber.equals("") || suppliedBuildNumber.equals("null")) {
-            project.ext.versionCode = Integer.valueOf(System.getProperty("versionCode", "1"))
+            project.ext.versionCode = 140
         } else {
-            project.ext.versionCode = Integer.valueOf(suppliedBuildNumber)
+            project.ext.versionCode = Integer.valueOf(suppliedBuildNumber) + 140
         }
+
+        // VersionName
+        String baseVersionName = VERSION_MAJOR + "." + VERSION_FEATURE
+        project.ext.versionName = baseVersionName + (isRelease ? ".storebuild" : ".developmentbuild") + project.ext.versionCode
+
+        // This is the synonym
+        project.version = project.ext.versionName
     }
     repositories {
+        google()
         jcenter()
+    }
+
+    // See: https://github.com/ben-manes/gradle-versions-plugin
+    dependencyUpdates.resolutionStrategy = {
+        componentSelection { rules ->
+            rules.all { selection ->
+                boolean rejected = ['alpha', 'beta', 'rc', 'cr', 'm'].any { qualifier ->
+                    selection.candidate.version ==~ /(?i).*[.-]${qualifier}[.\d-]*/
+                }
+                if (rejected) {
+                    selection.reject('Release candidate')
+                }
+            }
+        }
     }
 }

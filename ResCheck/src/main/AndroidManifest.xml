@@ -5,8 +5,7 @@
     android:installLocation="auto">
 
     <uses-sdk
-        android:minSdkVersion="8"
-        tools:overrideLibrary="com.timehop.stickyheadersrecyclerview, android.support.v17.leanback" />
+        tools:overrideLibrary="com.timehop.stickyheadersrecyclerview, androidx.leanback" />
 
     <uses-feature
         android:name="android.software.leanback"
