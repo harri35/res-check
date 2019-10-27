@@ -20,37 +20,24 @@ android {
     buildToolsVersion project.ext.versionBuildTools
 	signingConfigs {
         defaultSigning {
-			if (project.hasProperty('storeFilePath')) {
-				storeFile file(storeFilePath)
+            storeFile file('signing/debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
+        releaseSigning {
+            if (System.getenv()["CI"]) {
+                // CI=true is exported by Nevercode
+                storeFile file(System.getenv()["NC_KEYSTORE_PATH"])
+                storePassword System.getenv()["NC_KEYSTORE_PASSWORD"]
+                keyAlias System.getenv()["NC_KEY_ALIAS"]
+                keyPassword System.getenv()["NC_KEY_PASSWORD"]
             } else {
-				storeFile file('signing/debug.keystore')
-			}
-			
-			if (project.hasProperty('storePasswordV')) {
-				storePassword storePasswordV
-            } else {
-				storePassword 'android'
-			}
-			
-			if (project.hasProperty('keyAliasV')) {
-				keyAlias keyAliasV
-            } else {
-				keyAlias 'androiddebugkey'
-			}
-			
-			if (project.hasProperty('keyPasswordV')) {
-				keyPassword keyPasswordV
-            } else {
-				keyPassword 'android'
-			}
-
-			println '\n\n'
-			println 'CONF: build storeFile is set to ' + storeFile
-			println 'CONF: build storePassword is set to ' + storePassword
-			println 'CONF: build keyAlias is set to ' + keyAlias
-			println 'CONF: build keyPassword is set to ' + keyPassword
-            println 'CONF: build versionName is set to ' + project.ext.versionName
-            println 'CONF: build versionCode is set to ' + project.ext.versionCode
+                storeFile file('signing/debug.keystore')
+                storePassword 'android'
+                keyAlias 'androiddebugkey'
+                keyPassword 'android'
+            }
         }
     }
 
@@ -64,7 +51,7 @@ android {
     }
     buildTypes {
         release {
-            // Set the next line to TRUE to enable proguard
+            signingConfig signingConfigs.releaseSigning
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
