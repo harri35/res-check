@@ -6,7 +6,7 @@ final String VERSION_MAJOR = "1"
 /**
  * Feature version component YY, incremented when a feature is added. If it reaches 99 then it is set back to 00 and the VERSION_MAJOR is incremented by one.
  */
-final String VERSION_FEATURE = "1"
+final String VERSION_FEATURE = "6"
 buildscript {
     ext.gradlePluginVersion = '3.5.1'
     ext.gradleVersionsVersion = '0.27.0' // 23.10.2019
@@ -32,7 +32,7 @@ allprojects {
         versionCompileSdk = 29 // 27.09.2019
         versionTargetSdk = 29 // 27.09.2019
         versionMinSdkVersion = 14 // 27.09.2019
-        versionBuildTools = '28.0.3' // 27.09.2019
+        versionBuildTools = '29.0.0' // 27.09.2019
 
         // Libraries
         versionAppCompat = '1.1.0' // 27.10.2019
