@@ -64,7 +64,6 @@ definitions:
 workflows:
   play-store-release-builds:
     name: Play Store Release builds
-    instance_type: linux_x2
     scripts:
       - name: Check 'master' branch
         script: if [ "$FCI_BRANCH" != "master" ]; then exit 1; fi
@@ -76,7 +75,6 @@ workflows:
     artifacts: *androidArtifacts
   develop-builds:
     name: Dev builds
-    instance_type: linux_x2
     triggering:
       events:
         - push
@@ -94,7 +92,6 @@ workflows:
         recipients: *debugEmails
   merge-requests:
     name: Merge requests
-    instance_type: linux_x2
     triggering:
       events:
         - pull_request
