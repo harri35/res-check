@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.SearchView;
+import timber.log.Timber;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,7 +18,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filterable;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.harrikirik.rescheck.R;
@@ -24,7 +25,6 @@ import com.harrikirik.rescheck.adapter.InfoAdapter;
 import com.harrikirik.rescheck.decarator.DividerItemDecoration;
 import com.harrikirik.rescheck.dto.BaseInfoObject;
 import com.harrikirik.rescheck.util.InfoUtil;
-import com.harrikirik.rescheck.util.Log;
 import com.harrikirik.rescheck.util.Util;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
@@ -38,7 +38,6 @@ public class SpecFragment extends Fragment implements InfoAdapter.InfoAdapterLis
 
     private static final String STATE_FILTER = "com.harrikirik.rescheck.STATE_FILTER";
 
-    private Log log = Log.getInstance(this);
     private RecyclerView recyclerView;
     private String filterText;
 
@@ -118,7 +117,7 @@ public class SpecFragment extends Fragment implements InfoAdapter.InfoAdapterLis
     }
 
     private void setListFilter(final String filterText) {
-        log.d("setListFilter: " + filterText);
+        Timber.d("setListFilter: %s", filterText);
         if (recyclerView == null || recyclerView.getAdapter() == null) {
             return;
         }

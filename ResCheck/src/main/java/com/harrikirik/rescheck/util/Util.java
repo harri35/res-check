@@ -18,6 +18,7 @@ import java.util.Locale;
 
 import androidx.appcompat.widget.SearchView;
 import androidx.core.view.MenuItemCompat;
+import timber.log.Timber;
 
 
 public class Util {
@@ -35,7 +36,7 @@ public class Util {
     }
 
     private static boolean copyToClipboardWithContentClipboardManager(final Context context, final String content) {
-        Log.getInstance(Util.class).d("copyToClipboardWithContentClipboardManager - content: " + content);
+       Timber.d("copyToClipboardWithContentClipboardManager - content: %s", content);
         try {
             final android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
             if (clipboard == null) {
@@ -45,13 +46,13 @@ public class Util {
             clipboard.setPrimaryClip(clip);
             return true;
         } catch (Exception e) {
-            Log.getInstance(Util.class).e("copyToClipboardWithContentClipboardManager", e);
+            Timber.e(e, "copyToClipboardWithContentClipboardManager");
         }
         return false;
     }
 
     public static void shareText(final Context context, final String chooserTitle, final String text) {
-        Log.getInstance(Util.class).d("shareText: " + text);
+        Timber.d("shareText: %s", text);
 
         try {
             final Intent intent = new Intent(Intent.ACTION_SEND);
@@ -59,7 +60,7 @@ public class Util {
             intent.putExtra(Intent.EXTRA_TEXT, text);
             context.startActivity(Intent.createChooser(intent, chooserTitle));
         } catch (Exception e) {
-            Log.getInstance(Util.class).e("shareText", e);
+            Timber.e(e, "shareText");
         }
     }
 

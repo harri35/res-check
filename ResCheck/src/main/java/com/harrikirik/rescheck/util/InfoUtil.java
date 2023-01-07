@@ -23,6 +23,8 @@ import com.harrikirik.rescheck.dto.InfoItem;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import timber.log.Timber;
+
 /**
  * Util class to get the actual device info
  * Harri Kirik, harri35@gmail.com
@@ -32,45 +34,43 @@ public class InfoUtil {
     private static final int LOW_RAM_DEVICE_YES = R.string.text_low_ram_device_yes;
     private static final int LOW_RAM_DEVICE_NO = R.string.text_low_ram_device_no;
 
-    private static Log log = Log.getInstance(InfoUtil.class);
-
     public static ArrayList<BaseInfoObject> getFullInfo(final Activity activity) {
         final ArrayList<BaseInfoObject> items = new ArrayList<>();
 
         try {
             items.addAll(getGeneralDeviceInfo(activity));
         } catch (Exception e) {
-            log.e("getFullInfo -> getGeneralDeviceInfo", e);
+            Timber.e(e, "getFullInfo -> getGeneralDeviceInfo");
         }
 
         try {
             items.addAll(getDisplayInfo(activity));
         } catch (Exception e) {
-            log.e("getFullInfo -> getDisplayInfo", e);
+            Timber.e(e, "getFullInfo -> getDisplayInfo");
         }
 
         try {
             items.addAll(getScreenInfo(activity));
         } catch (Exception e) {
-            log.e("getFullInfo -> getScreenInfo", e);
+            Timber.e(e, "getFullInfo -> getScreenInfo");
         }
 
         try {
             items.addAll(getMemoryInfo(activity));
         } catch (Exception e) {
-            log.e("getFullInfo -> getMemoryInfo", e);
+            Timber.e(e, "getFullInfo -> getMemoryInfo");
         }
 
         try {
             items.addAll(getABIInfo(activity));
         } catch (Exception e) {
-            log.e("getFullInfo -> getABIInfo", e);
+            Timber.e(e, "getFullInfo -> getABIInfo");
         }
 
         try {
             items.addAll(getGraphicsInfo(activity));
         } catch (Exception e) {
-            log.e("getFullInfo -> getGraphicsInfo", e);
+            Timber.e(e, "getFullInfo -> getGraphicsInfo");
         }
 
         return items;

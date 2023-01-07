@@ -1,23 +1,18 @@
-buildscript {
-    repositories {
-        google()
-        jcenter()
-    }
-}
 apply plugin: 'com.android.application'
 apply plugin: 'checkstyle'
+apply plugin: 'org.jetbrains.kotlin.android'
 
 repositories {
     mavenCentral()
 }
 
 android {
+    namespace 'com.harrikirik.rescheck'
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
     compileSdkVersion project.ext.versionCompileSdk
-    buildToolsVersion project.ext.versionBuildTools
 	signingConfigs {
         defaultSigning {
             storeFile file('signing/debug.keystore')
@@ -26,18 +21,10 @@ android {
             keyPassword 'android'
         }
         releaseSigning {
-            if (System.getenv()["CI"]) {
-                // CI=true is exported by Nevercode
-                storeFile file(System.getenv()["NC_KEYSTORE_PATH"])
-                storePassword System.getenv()["NC_KEYSTORE_PASSWORD"]
-                keyAlias System.getenv()["NC_KEY_ALIAS"]
-                keyPassword System.getenv()["NC_KEY_PASSWORD"]
-            } else {
-                storeFile file('signing/debug.keystore')
-                storePassword 'android'
-                keyAlias 'androiddebugkey'
-                keyPassword 'android'
-            }
+            storeFile file('signing/debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
         }
     }
 
@@ -76,13 +63,13 @@ android {
 }
 
 def GROUP_BUILD_TASKS = 'Build'
-task buildAllDebug(dependsOn: ['clean', 'build'])
+task buildAllDebug(dependsOn: ['build'])
 buildAllDebug.group = GROUP_BUILD_TASKS
-buildAllDebug.description = "Build and publish the debug version with GreenhouseCI"
+buildAllDebug.description = "Build and publish the debug version"
 
-task buildAllRelease(dependsOn: ['buildAllDebug'])
+task buildAllRelease(dependsOn: ['buildAllDebug', 'bundleRelease'])
 buildAllRelease.group = GROUP_BUILD_TASKS
-buildAllRelease.description = "Build and publish the release version with GreenhouseCI"
+buildAllRelease.description = "Build and publish the release version"
 
 build.mustRunAfter clean
 
@@ -103,4 +90,6 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:$rootProject.ext.versionRecyclerView"
     implementation "com.timehop.stickyheadersrecyclerview:library:$rootProject.ext.versionStickyHeadersRecyclerView"
     implementation "androidx.leanback:leanback:$rootProject.ext.versionLeanback"
+    implementation "com.jakewharton.timber:timber:$rootProject.ext.versionTimber"
+    implementation "androidx.core:core-ktx:$rootProject.ext.versionCoreKtx"
 }
