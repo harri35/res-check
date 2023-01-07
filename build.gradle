@@ -43,6 +43,8 @@ allprojects {
         versionStickyHeadersRecyclerView = '0.4.3@aar' // 27.10.2019
         versionTimber = '5.0.1' // 07.01.2023
         versionCoreKtx = '1.9.0' // 07.01.2023
+        versionMultidex = '2.0.1' // 07.01.2023
+        versionCoreDesugar = '1.2.2' // 07.01.2023
     }
     buildscript {
         project.group = "harrikirik"

@@ -1,14 +1,40 @@
-apply plugin: 'com.android.application'
-apply plugin: 'checkstyle'
-apply plugin: 'org.jetbrains.kotlin.android'
-
 repositories {
     mavenCentral()
 }
 
+apply plugin: 'com.android.application'
+apply plugin: 'checkstyle'
+apply plugin: 'org.jetbrains.kotlin.android'
+
+ext {
+    /* Versioning information:
+     * The versions are in the format x.y.z
+     * x - Major version
+     * y - Minor version
+     * z - Patch version
+     * w - Build version
+     *
+     * versionName will be x.y.z
+     * versionCode will be a number in the format xxyyzzw.
+     * This means that every version (except build version) has up to 2 digits until it starts affecting other numbers.
+     * w (versionBuild) is for making a release with the same version name, but different version code.
+     */
+    versionMajor = 2
+    versionMinor = 0
+    versionPatch = 0
+    versionBuild = 0 // Use this when builds with the same version are needed. Change to 0 once done
+    initVersioning()
+}
+
 android {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
     namespace 'com.harrikirik.rescheck'
     compileOptions {
+        // Flag to enable support for the new language APIs
+        coreLibraryDesugaringEnabled true
+
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -39,9 +65,16 @@ android {
         applicationId "com.harrikirik.rescheck"
         minSdkVersion project.ext.versionMinSdkVersion
         targetSdkVersion project.ext.versionTargetSdk
-        versionName project.ext.versionName
-        versionCode project.ext.versionCode
         signingConfig signingConfigs.defaultSigning
+        versionCode project.ext.versionCode
+        versionName project.ext.versionName
+
+        // Enabling multidex support.
+        multiDexEnabled true
+
+        println "CONF: versionName is set to: " + versionName
+        println "CONF: versionCode is set to: " + versionCode
+        println "CONF: is a release build: " + project.ext.isRelease
     }
     buildTypes {
         release {
@@ -104,4 +137,31 @@ dependencies {
     implementation "androidx.leanback:leanback:$rootProject.ext.versionLeanback"
     implementation "com.jakewharton.timber:timber:$rootProject.ext.versionTimber"
     implementation "androidx.core:core-ktx:$rootProject.ext.versionCoreKtx"
+    implementation "androidx.multidex:multidex:$rootProject.ext.versionMultidex"
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:$rootProject.ext.versionCoreDesugar"
+}
+
+def initVersioning() {
+    // versionMajor is not limited
+    checkVersioningNumber(versionMinor, 99, "Minor")
+    checkVersioningNumber(versionPatch, 99, "Patch")
+    checkVersioningNumber(versionBuild, 9, "Build")
+
+    // Yes yes, I am cheating here.
+    project.ext.isRelease = project.gradle.startParameter.taskNames.contains("buildAllRelease")
+
+    String baseVersionName = "$versionMajor.$versionMinor.$versionPatch"
+    String versionName = baseVersionName
+    int versionCode = versionMajor * 100000 + versionMinor * 1000 + versionPatch * 10 + versionBuild
+
+    project.ext.versionName = versionName
+    project.ext.versionCode = versionCode
+}
+
+static def checkVersioningNumber(int number, int limit, String fieldName) {
+    if (number < 0) {
+        throw new GradleException("$fieldName version number can\'t be less than 0")
+    } else if (number > limit) {
+        throw new GradleException("$fieldName version number can\'t be greater than $limit")
+    }
 }
