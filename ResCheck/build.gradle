@@ -26,7 +26,7 @@ android {
                 storePassword System.getenv()["CM_KEYSTORE_PASSWORD"]
                 keyAlias System.getenv()["CM_KEY_ALIAS"]
                 keyPassword System.getenv()["CM_KEY_PASSWORD"]
-            } else
+            } else {
                 storeFile file('signing/debug.keystore')
                 storePassword 'android'
                 keyAlias 'androiddebugkey'
