@@ -1,0 +1,113 @@
+# Has a separate flows for develop branch (automatic builds),
+# Merge Request (automatic builds) and master branch Release builds (manual builds).
+definitions:
+  artifacts: &androidArtifacts # Section def
+    - emulator.log
+    - ResCheck/build/reports
+    - ResCheck/build/outputs/androidTest-results
+    - ResCheck/build/outputs/logs
+    - ResCheck/build/outputs/**/*.apk
+    - ResCheck/build/outputs/**/*.aab
+    - ResCheck/build/outputs/**/mapping.txt
+  debug-emails: &debugEmails
+    - harri35@gmail.com
+  release-emails: &releaseEmails
+    - harri35@gmail.com
+  scripts:
+    # Local setup
+    - &stepLocalSetup
+      name: Set up local properties and permissons
+      script: |
+        chmod +x gradlew
+        echo "sdk.dir=$ANDROID_SDK_ROOT" > "$FCI_BUILD_DIR/local.properties"
+    # Run checkCode
+    - &stepCheckCode
+      name: Check code style and formatting
+      script: ./gradlew checkCode
+    # Build DEBUG
+    - &stepBuildDebug
+      name: Build Android
+      script: ./gradlew clean buildAllDebug
+    # Build RELEASE
+    - &stepBuildRelease
+      name: Build Android
+      script: ./gradlew clean buildAllRelease
+    # Start emulator
+    - &stepStartEmulator
+      name: Launch emulator
+      script: |
+        cd $ANDROID_HOME/tools
+        emulator -avd emulator &
+        adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;'
+    # Stop emulator
+    - &stepStopEmulator
+      name: Stop emulator
+      script: |
+        cd $ANDROID_HOME/tools
+        adb emu kill
+    # Run tests
+    - &stepRunTests
+      name: Test Android
+      script: |
+        ./gradlew connectedAndroidTest
+        result=$?
+        adb logcat -d > emulator.log
+        if [ $result -eq 0 ]
+        then
+          echo "Tests executed successfully"
+        else
+          echo "Tests failed"
+          exit 1
+        fi
+
+# Flows
+workflows:
+  play-store-release-builds:
+    name: Play Store Release builds
+    instance_type: linux_x2
+    scripts:
+      - name: Check 'master' branch
+        script: if [ "$FCI_BRANCH" != "master" ]; then exit 1; fi
+      - *stepLocalSetup
+      - *stepBuildRelease
+    publishing:
+      email:
+        recipients: *releaseEmails
+    artifacts: *androidArtifacts
+  develop-builds:
+    name: Dev builds
+    instance_type: linux_x2
+    triggering:
+      events:
+        - push
+        - pull_request
+      branch_patterns:
+        - pattern: 'develop'
+          include: true
+          source: true
+    scripts:
+      - *stepLocalSetup
+      - *stepBuildDebug
+    artifacts: *androidArtifacts
+    publishing:
+      email:
+        recipients: *debugEmails
+  merge-requests:
+    name: Merge requests
+    instance_type: linux_x2
+    triggering:
+      events:
+        - pull_request
+      branch_patterns:
+        - pattern: 'develop'
+          include: true
+          source: false
+      cancel_previous_builds: true
+    scripts:
+      - *stepLocalSetup
+      - *stepBuildDebug
+    publishing:
+      email:
+        recipients: *debugEmails
+        notify:
+          success: false
