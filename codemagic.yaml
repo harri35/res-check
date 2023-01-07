@@ -66,7 +66,7 @@ workflows:
     name: Play Store Release builds
     scripts:
       - name: Check 'master' branch
-        script: if [ "$FCI_BRANCH" != "master" ]; then exit 1; fi
+        script: if [ "$FCI_BRANCH" != "main" ]; then exit 1; fi
       - *stepLocalSetup
       - *stepBuildRelease
     publishing:
