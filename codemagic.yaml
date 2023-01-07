@@ -64,6 +64,9 @@ definitions:
 workflows:
   play-store-release-builds:
     name: Play Store Release builds
+    environment:
+      android_signing:
+        - rescheck
     scripts:
       - name: Check 'master' branch
         script: if [ "$FCI_BRANCH" != "main" ]; then exit 1; fi
@@ -75,6 +78,9 @@ workflows:
     artifacts: *androidArtifacts
   develop-builds:
     name: Dev builds
+    environment:
+      android_signing:
+        - rescheck
     triggering:
       events:
         - push
@@ -92,6 +98,9 @@ workflows:
         recipients: *debugEmails
   merge-requests:
     name: Merge requests
+    environment:
+      android_signing:
+        - rescheck
     triggering:
       events:
         - pull_request
