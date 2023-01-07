@@ -67,6 +67,11 @@ android {
         warning "InvalidPackage"
         warning "GradleCompatible"
     }
+    android.applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            output.outputFileName = "${rootProject.name}-${variant.name}-${variant.versionName}.apk"
+        }
+    }
 }
 
 def GROUP_BUILD_TASKS = 'Build'
