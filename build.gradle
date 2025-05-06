@@ -1,85 +1,89 @@
-apply plugin: 'com.github.ben-manes.versions'
-/**
- * Major version component, incremented when the VERSION_FEATURE reaches to 10.
- */
-final String VERSION_MAJOR = "1"
-/**
- * Feature version component YY, incremented when a feature is added. If it reaches 99 then it is set back to 00 and the VERSION_MAJOR is incremented by one.
- */
-final String VERSION_FEATURE = "8"
-buildscript {
-    ext.gradlePluginVersion = '7.3.1'
-    ext.gradleVersionsVersion = '0.43.0' // 07.01.2023
-    ext.kotlin_version = '1.7.20'
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
-    dependencies {
-        classpath "com.android.tools.build:gradle:$gradlePluginVersion"
-        classpath "com.github.ben-manes:gradle-versions-plugin:$gradleVersionsVersion"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
+plugins {
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.kotlin.parcelize) apply false
+    alias(libs.plugins.kotlin.kapt) apply false
+    alias(libs.plugins.kotlin.ksp) apply false
+    alias(libs.plugins.ktlint.gradle)
+    alias(libs.plugins.gradleVersions)
+    alias(libs.plugins.detekt)
 }
 
-ext {
-    versionName = "0.0.1"
-    versionCode = 1
-    isRelease = false
-}
-
-allprojects {
-    ext {
-        // Tool versions
-        versionCompileSdk = 33 // 07.01.2023
-        versionTargetSdk = 33 // 07.01.2023
-        versionMinSdkVersion = 14 // 07.01.2023
-
-        // Libraries
-        versionAppCompat = '1.5.1' // 07.01.2023
-        versionRecyclerView = '1.2.1' // 07.01.2023
-        versionLeanback = '1.0.0' // 27.10.2019
-        versionStickyHeadersRecyclerView = '0.4.3@aar' // 27.10.2019
-        versionTimber = '5.0.1' // 07.01.2023
-        versionCoreKtx = '1.9.0' // 07.01.2023
-        versionMultidex = '2.0.1' // 07.01.2023
-        versionCoreDesugar = '1.2.2' // 07.01.2023
+subprojects {
+    // KTLint (Kotlin code style enforcer)
+    apply(plugin: libs.plugins.ktlint.gradle.get().pluginId)
+    ktlint {
+        outputToConsole = true
     }
-    buildscript {
-        project.group = "harrikirik"
-        // Yes yes, I am cheating here.
-        project.ext.isRelease = project.gradle.startParameter.taskNames.contains("buildAllRelease")
 
-        String suppliedBuildNumber = "$System.env.BUILD_NUMBER"
-        // VersionCode
-        if (suppliedBuildNumber == null || suppliedBuildNumber.equals("") || suppliedBuildNumber.equals("null")) {
-            project.ext.versionCode = 140
-        } else {
-            project.ext.versionCode = Integer.valueOf(suppliedBuildNumber) + 140
+    // Detekt (Kotlin static analyser)
+    apply(plugin: libs.plugins.detekt.get().pluginId)
+    detekt {
+        // Include all rules
+        allRules = true
+        // preconfigure defaults (see the rule set file below for explanations)
+        buildUponDefaultConfig = true
+        // point to your custom config defining rules to run, overwriting default behavior
+        config.setFrom("${project.rootDir}/config/detekt/detekt-config.yaml")
+    }
+
+    tasks.named("detekt").configure {
+        jvmTarget = libs.versions.jvmTarget.get()
+        reports {
+            html.required.set(true)
+            xml.required.set(false)
+            txt.required.set(false)
         }
-
-        // VersionName
-        String baseVersionName = VERSION_MAJOR + "." + VERSION_FEATURE
-        project.ext.versionName = baseVersionName + (isRelease ? ".storebuild" : ".developmentbuild") + project.ext.versionCode
-
-        // This is the synonym
-        project.version = project.ext.versionName
-    }
-    repositories {
-        google()
-        mavenCentral()
     }
 
-    // See: https://github.com/ben-manes/gradle-versions-plugin
-    dependencyUpdates.resolutionStrategy = {
-        componentSelection { rules ->
-            rules.all { selection ->
-                boolean rejected = ['alpha', 'beta', 'rc', 'cr', 'm'].any { qualifier ->
-                    selection.candidate.version ==~ /(?i).*[.-]${qualifier}[.\d-]*/
-                }
-                if (rejected) {
-                    selection.reject('Release candidate')
+    afterEvaluate {
+    // Make sure detekt is executed with all the other linters for all modules
+    check.dependsOn "detekt"
+}
+
+tasks.register('checkCode') {
+    group = "Verification"
+    description = "Run detekt, ktlint and CheckStyle."
+    dependsOn "detekt", "ktlintCheck", "checkstyle"
+}
+
+// Mockito
+// https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+// https://github.com/gradle/gradle/issues/2298
+// Also see dependencies.gradle for additional configuration
+configurations {
+    mockitoAgent
+}
+tasks {
+    tasks.withType(Test).tap {
+        configureEach {
+            jvmArgs += "-javaagent:${configurations.mockitoAgent.asPath}"
+        }
+    }
+}
+}
+
+tasks.register('clean', Delete) {
+    group = "Build"
+    description = "Delete the build directory. Useful if you need to make a clean build."
+    delete rootProject.layout.buildDirectory
+}
+
+// Don't show non stable updates for current stable versions
+def isNonStable = { String version ->
+    def stableKeyword = ["RELEASE", "FINAL", "GA"].any { keyword -> version.toUpperCase().contains(keyword) }
+    def regex = /^[0-9,.v-]+(-r)?$/
+    return !stableKeyword && !(version ==~ regex)
+}
+
+dependencyUpdates {
+    checkForGradleUpdate = true
+
+    resolutionStrategy {
+        componentSelection {
+            all {
+                if (isNonStable(candidate.version) && !isNonStable(currentVersion)) {
+                    reject("Release candidate")
                 }
             }
         }

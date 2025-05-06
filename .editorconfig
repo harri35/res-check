@@ -1,0 +1,19 @@
+[*.{kt,kts}]
+indent_size=4
+insert_final_newline=true
+max_line_length=150
+
+ktlint_code_style=intellij_idea
+
+# Allow annotations to be on the same line. Useful for formatting
+ktlint_standard_spacing-between-declarations-with-annotations=disabled
+# Disable trailing comma checks as we want these to be optional
+ktlint_standard_trailing-comma-on-call-site=disabled
+ktlint_standard_trailing-comma-on-declaration-site=disabled
+# Disable function signature checks. Restricts multi-line and single-line parameters too much
+ktlint_standard_function-signature=disabled
+# Disable function naming for Compose functions. Compose uses PascalCase for regular composables.
+ktlint_function_naming_ignore_when_annotated_with=Composable
+
+ij_continuation_indent_size=4
+ij_kotlin_code_style_defaults=KOTLIN_OFFICIAL
