@@ -1,6 +1,6 @@
 [versions]
 
-android-sdk-min = "14"
+android-sdk-min = "21"
 android-sdk-target = "36"
 android-sdk-compile = "36"
 
@@ -17,6 +17,7 @@ timber = '5.0.1'
 core-ktx = '1.9.0'
 multidex = '2.0.1'
 core-desugar = '1.2.2'
+androidx-activity = '1.10.1'
 
 jvmTarget = "17"
 javaCompatibility = "VERSION_17"
@@ -42,3 +43,5 @@ timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "tim
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 multidex = { group = "androidx.multidex", name = "multidex", version.ref = "multidex" }
 core-library-desugaring = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "core-desugar" }
+androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "androidx-activity" }
+androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "androidx-activity" }
