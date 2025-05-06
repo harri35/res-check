@@ -1,16 +1,6 @@
 package com.harrikirik.rescheck.fragment;
 
-import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.SearchView;
-import timber.log.Timber;
-
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,6 +19,14 @@ import com.harrikirik.rescheck.util.Util;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import java.util.ArrayList;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import timber.log.Timber;
 
 public class SpecFragment extends Fragment implements InfoAdapter.InfoAdapterListener {
     public static final int MODE_NORMAL = 0;
@@ -89,13 +87,11 @@ public class SpecFragment extends Fragment implements InfoAdapter.InfoAdapterLis
         final ArrayList<BaseInfoObject> items = InfoUtil.getFullInfo(getActivity());
         final InfoAdapter adapter = new InfoAdapter(recyclerView.getContext().getApplicationContext(), items, this);
         recyclerView.setAdapter(adapter);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            recyclerView.addItemDecoration(new StickyRecyclerHeadersDecoration(adapter));
-        }
+        recyclerView.addItemDecoration(new StickyRecyclerHeadersDecoration(adapter));
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         if (getMode() == MODE_NORMAL) {
             inflater.inflate(R.menu.main_menu, menu);
@@ -127,14 +123,13 @@ public class SpecFragment extends Fragment implements InfoAdapter.InfoAdapterLis
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_copy_to_clipboard:
-                Util.copyToClipboard(getActivity(), InfoUtil.getFullInfoString(getActivity()), true);
-                return true;
-            case R.id.menu_share_with:
-                //noinspection ConstantConditions
-                Util.shareText(getActivity(), getActivity().getString(R.string.title_share_with), InfoUtil.getFullInfoString(getActivity()));
-                return true;
+        int itemId = item.getItemId();
+        if (itemId == R.id.menu_copy_to_clipboard) {
+            Util.copyToClipboard(getActivity(), InfoUtil.getFullInfoString(getActivity()), true);
+            return true;
+        } else if (itemId == R.id.menu_share_with) {
+            Util.shareText(getActivity(), requireActivity().getString(R.string.title_share_with), InfoUtil.getFullInfoString(getActivity()));
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

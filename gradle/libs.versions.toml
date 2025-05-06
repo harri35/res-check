@@ -1,0 +1,44 @@
+[versions]
+
+android-sdk-min = "14"
+android-sdk-target = "36"
+android-sdk-compile = "36"
+
+android-gradle-plugin = "8.9.1"
+
+kotlin = "2.1.20"
+kotlin-ksp = "2.1.20-2.0.0" # This one needs a compatible ksp version code https://github.com/google/ksp/releases
+
+app-compat = '1.5.1'
+recycler-view = '1.2.1'
+leanback = '1.0.0'
+sticky-headers-recycler-view = '0.4.3'
+timber = '5.0.1'
+core-ktx = '1.9.0'
+multidex = '2.0.1'
+core-desugar = '1.2.2'
+
+jvmTarget = "17"
+javaCompatibility = "VERSION_17"
+
+[plugins]
+
+android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "kotlin-ksp" }
+
+ktlint-gradle = { id = "org.jlleitschuh.gradle.ktlint", version = "12.2.0" }
+gradleVersions = { id = "com.github.ben-manes.versions", version = "0.52.0" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version = "1.23.8" }
+
+[libraries]
+appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "app-compat" }
+recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recycler-view" }
+stickyheadersrecyclerview = { group = "com.timehop.stickyheadersrecyclerview", name = "library", version.ref = "sticky-headers-recycler-view" }
+leanback = { group = "androidx.leanback", name = "leanback", version.ref = "leanback" }
+timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
+core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
+multidex = { group = "androidx.multidex", name = "multidex", version.ref = "multidex" }
+core-library-desugaring = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "core-desugar" }

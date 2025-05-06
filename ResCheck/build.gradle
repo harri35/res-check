@@ -1,10 +1,13 @@
-repositories {
-    mavenCentral()
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.kotlin.kapt)
 }
 
-apply plugin: 'com.android.application'
 apply plugin: 'checkstyle'
-apply plugin: 'org.jetbrains.kotlin.android'
 
 ext {
     /* Versioning information:
@@ -19,26 +22,36 @@ ext {
      * This means that every version (except build version) has up to 2 digits until it starts affecting other numbers.
      * w (versionBuild) is for making a release with the same version name, but different version code.
      */
-    versionMajor = 2
+    versionMajor = 3
     versionMinor = 0
     versionPatch = 0
     versionBuild = 0 // Use this when builds with the same version are needed. Change to 0 once done
     initVersioning()
 }
 
+// Note: flavor and variant info is added later and after that you will get stuff like
+// name-0.0.1-flavor-debug.apk, name-0.0.1-flavor-release.aab, ..
+project.base.archivesName.set("${rootProject.name}-${versionName}")
+
 android {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
     namespace 'com.harrikirik.rescheck'
+
+    buildFeatures {
+        viewBinding = true
+        buildConfig = true
+    }
+
+    kotlinOptions {
+        jvmTarget = libs.versions.jvmTarget.get()
+    }
+
     compileOptions {
         // Flag to enable support for the new language APIs
-        coreLibraryDesugaringEnabled true
+        coreLibraryDesugaringEnabled = true
 
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.valueOf(libs.versions.javaCompatibility.get())
+        targetCompatibility = JavaVersion.valueOf(libs.versions.javaCompatibility.get())
     }
-    compileSdkVersion project.ext.versionCompileSdk
 	signingConfigs {
         defaultSigning {
             storeFile file('signing/debug.keystore')
@@ -62,10 +75,13 @@ android {
     }
 
 	defaultConfig {
+        compileSdk = libs.versions.android.sdk.compile.get().toInteger()
+        targetSdkVersion(libs.versions.android.sdk.target.get())
+        minSdkVersion(libs.versions.android.sdk.min.get())
         applicationId "com.harrikirik.rescheck"
-        minSdkVersion project.ext.versionMinSdkVersion
-        targetSdkVersion project.ext.versionTargetSdk
+
         signingConfig signingConfigs.defaultSigning
+
         versionCode project.ext.versionCode
         versionName project.ext.versionName
 
@@ -87,58 +103,64 @@ android {
             signingConfig signingConfigs.defaultSigning
         }
     }
-    lintOptions {
-        checkReleaseBuilds true
-        abortOnError true
+    lint {
+        // To remember that there are additional rules defined in XML
+        lintConfig = file("$rootDir/lint.xml")
+
+        // Workaround for a bug in Kotlin extension's Parcelize
+        warning("ParcelCreator")
+
+        // In general we want to check for problems. Any time, all the time.
+        checkReleaseBuilds = true
+        // And fail the build if we have errors
+        abortOnError = true
+
         // Level depends on the type of the job
-        /// Fail the build if buildRelease target is called and we have missing translations!
+        /// Fail the build if buildNevercodeRelease target is called and we have missing translations!
         project.ext.isRelease ? error("MissingTranslation") : warning("MissingTranslation")
+        // Error level things
         /// Hardcoded text should not exist or should have case by case exceptions
-        error "HardcodedText"
         // Warning level things
-        warning "ImpliedQuantity"
-        warning "InvalidPackage"
-        warning "GradleCompatible"
-    }
-    android.applicationVariants.all { variant ->
-        variant.outputs.all { output ->
-            output.outputFileName = "${rootProject.name}-${variant.name}-${variant.versionName}.apk"
-        }
+        warning("ImpliedQuantity")
+        // Retrofit uses Okio and that generates this warning
+        warning("InvalidPackage")
+        fatal("StopShip")
     }
 }
 
-def GROUP_BUILD_TASKS = 'Build'
-task buildAllDebug(dependsOn: ['build'])
-buildAllDebug.group = GROUP_BUILD_TASKS
-buildAllDebug.description = "Build and publish the debug version"
+def GROUP_CI_BUILD_TASKS = 'Build'
 
-task buildAllRelease(dependsOn: ['buildAllDebug', 'bundleRelease'])
-buildAllRelease.group = GROUP_BUILD_TASKS
-buildAllRelease.description = "Build and publish the release version"
+tasks.register('buildAllDebug') {
+    group = GROUP_CI_BUILD_TASKS
+    description = "Build the debug version"
+    dependsOn "build"
+}
 
-build.mustRunAfter clean
+tasks.register('buildAllRelease') {
+    group = GROUP_CI_BUILD_TASKS
+    description = "Build the release version (APKs and AABs)"
+    dependsOn "buildAllDebug", "bundleRelease"
+}
 
-check.dependsOn 'checkstyle'
-
-task checkstyle(type: Checkstyle) {
+tasks.register('checkstyle', Checkstyle) {
     configFile file("../config/checkstyle/checkstyle.xml")
     source 'src'
     include '**/*.java'
     exclude '**/gen/**'
-
     classpath = files()
 }
 
+build.mustRunAfter clean
+
 dependencies {
-    // For Google ActionBar
-    implementation "androidx.appcompat:appcompat:$rootProject.ext.versionAppCompat"
-    implementation "androidx.recyclerview:recyclerview:$rootProject.ext.versionRecyclerView"
-    implementation "com.timehop.stickyheadersrecyclerview:library:$rootProject.ext.versionStickyHeadersRecyclerView"
-    implementation "androidx.leanback:leanback:$rootProject.ext.versionLeanback"
-    implementation "com.jakewharton.timber:timber:$rootProject.ext.versionTimber"
-    implementation "androidx.core:core-ktx:$rootProject.ext.versionCoreKtx"
-    implementation "androidx.multidex:multidex:$rootProject.ext.versionMultidex"
-    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:$rootProject.ext.versionCoreDesugar"
+    implementation libs.appcompat
+    implementation libs.recyclerview
+    implementation(variantOf(libs.stickyheadersrecyclerview) { artifactType("aar") })
+    implementation libs.leanback
+    implementation libs.timber
+    implementation libs.core.ktx
+    implementation libs.multidex
+    coreLibraryDesugaring libs.core.library.desugaring
 }
 
 def initVersioning() {

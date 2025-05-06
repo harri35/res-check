@@ -1,0 +1,56 @@
+# Detekt custom config.
+# This assumes all baseline rules have also been included with the "buildUponDefaultConfig = true" flag
+# For the baseline rule set see https://github.com/detekt/detekt/blob/master/detekt-core/src/main/resources/default-detekt-config.yml
+# For rule explanations see "Rule sets" ("style", "complexity", etc) from https://detekt.github.io/detekt/
+# To suppress issues see https://arturbosch.github.io/detekt/suppressing-rules.html
+
+# This file only contains the differences from the base rule set.
+style:
+  MaxLineLength:
+    maxLineLength: 150 # Custom size to match the one in .editorconfig
+  LoopWithTooManyJumpStatements:
+    maxJumpCount: 3 # Only allowing 1 is too strict
+  ReturnCount:
+    active: true
+    max: 3 # The original of 2 is too strict here
+    excludedFunctions:
+      - 'equals'
+    excludeLabeled: true # Exclude labeled returns
+    excludeReturnFromLambda: true
+    excludeGuardClauses: true # Exclude null guards
+  BracesOnIfStatements:
+    active: true # Too hard to read without braces
+    singleLine: 'never'
+    multiLine: 'always'
+  MandatoryBracesLoops:
+    active: true # Too hard to read without braces
+  BracesOnWhenStatements: # Let the writes choose but force consistency
+    active: true
+    singleLine: 'consistent'
+    multiLine: 'consistent'
+  UnnecessaryApply:
+    active: true # Let's make things easier to read
+  VarCouldBeVal:
+    active: true # Let's make things easier to read
+  UnnecessaryLet:
+    active: true # Let's make things easier to read
+  MagicNumber:
+    ignoreLocalVariableDeclaration: true
+
+naming:
+  FunctionNaming:
+    ignoreAnnotated: ['Composable'] # Composable functions use PascalCase
+
+complexity:
+  TooManyFunctions: # The default limit to functions is 3. This is too little
+    thresholdInFiles: 50
+    thresholdInClasses: 50
+    thresholdInInterfaces: 100
+    thresholdInObjects: 50
+    thresholdInEnums: 50
+    ignoreDeprecated: true # Deprecated will be removed soon anyways
+    ignoreOverridden: true # Useful for Android Activities and Fragments where there are a lot of overrides
+
+exceptions:
+  TooGenericExceptionCaught:
+    active: false #There are befits to force the usage of only specific errors. But this totally disallows defencive programming on mobile devices. As bug fixes are difficult to publish for mobile then we will allow it.
